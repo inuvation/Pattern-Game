@@ -3,32 +3,8 @@
 # https://www.youtube.com/watch?v=9GdbMc4CEhE (Dynamic time warping 2: Algorithm)
 
 from cmu_graphics import *
-from patterns import loadPatterns
+from patterns import loadPatterns, dynamicTimeWarpCost
 import math
-
-def dynamicTimeWarpCost(pattern1, pattern2):
-    len1, len2 = len(pattern1) + 1, len(pattern2) + 1
-
-    costMatrix = createMatrix(len1, len2)
-
-    # 0,0 starts as 0, where all other elements in the first row and column are infinity 
-    for i in range(len1): 
-        costMatrix[i][0] = math.inf
-
-    for j in range(len2): 
-        costMatrix[0][j] = math.inf
-
-    costMatrix[0][0] = 0
-
-    for i in range(1, len1):
-        for j in range(1, len2):
-            pass
-
-    return costMatrix
-
-            
-def createMatrix(rows, cols):
-    return [([None] * cols) for row in range(rows)]
 
 def drawGraph(app, pattern, x, y, w, h, horizontal=True):
     drawRect(x, y, w, h, fill='white', border='black')
@@ -71,7 +47,12 @@ def drawGrid(app, x, y, w, h):
             drawLabel(f'{j}, {i}', rectX + app.padding, rectY + app.padding, align='left-top')
 
             # Cell Cost
-            drawLabel(app.costMatrix[i][j], rectX + boxW/2, rectY + boxH/2)
+            value = app.costMatrix[i][j]
+            if app.costMatrix[i][j] == math.inf:
+                label = 'infinity'
+            else:
+                label = rounded(value*100) / 100
+            drawLabel(label, rectX + boxW/2, rectY + boxH/2)
 
 def redrawAll(app):
     # Vertical Graph
@@ -92,14 +73,15 @@ def redrawAll(app):
 def onAppStart(app):
     app.patterns = loadPatterns()
     app.margin = 16
-    app.padding = 8
+    app.padding = 16
 
-    app.pattern1 = app.patterns['test1']
-    app.pattern2 = app.patterns['test2']
+    app.pattern1 = app.patterns['land']
+    app.pattern2 = app.patterns['testland']
 
     app.costMatrix = dynamicTimeWarpCost(app.pattern1, app.pattern2)
 
 def main():
     app = runApp(width=768, height=768)
 
-main()
+if __name__ == '__main__':
+   main()
