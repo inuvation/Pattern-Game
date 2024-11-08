@@ -1,9 +1,7 @@
-# Citations
-# https://www.youtube.com/watch?v=ERKDHZyZDwA (Dynamic time warping 1: Motivation)
-# https://www.youtube.com/watch?v=9GdbMc4CEhE (Dynamic time warping 2: Algorithm)
-
 from cmu_graphics import *
-from patterns import loadPatterns, dynamicTimeWarpCost
+from utilities import dynamicTimeWarpCost
+from configuration import loadPatterns
+
 import math
 
 def drawGraph(app, pattern, x, y, w, h, horizontal=True):
@@ -76,7 +74,7 @@ def onAppStart(app):
     app.padding = 16
 
     app.pattern1 = app.patterns['land']
-    app.pattern2 = app.patterns['testland']
+    app.pattern2 = app.patterns['lor']
 
     app.costMatrix = dynamicTimeWarpCost(app.pattern1, app.pattern2)
 
