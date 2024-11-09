@@ -1,6 +1,5 @@
 from cmu_graphics import *
-from utilities import findPattern, loadPatternChanges
-from configuration import loadPatterns
+from modules.patterns import findPattern, loadPatternChanges, loadPatterns
 
 def getCommaSeperatedPatterns(patterns):
     string = ''

@@ -1,6 +1,5 @@
 from cmu_graphics import *
-from utilities import dynamicTimeWarpCost
-from configuration import loadPatterns
+from modules.patterns import dynamicTimeWarpCost, loadPatterns
 
 import math
 
