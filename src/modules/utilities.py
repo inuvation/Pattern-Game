@@ -2,8 +2,6 @@
 # https://www.youtube.com/watch?v=ERKDHZyZDwA (Dynamic time warping 1: Motivation)
 # https://www.youtube.com/watch?v=9GdbMc4CEhE (Dynamic time warping 2: Algorithm)
 
-from functools import cache
-
 def sign(n):
     if n < 0: return -1
     elif n == 0: return 0 
