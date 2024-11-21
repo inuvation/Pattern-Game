@@ -1,10 +1,10 @@
-from modules.configuration import loadConfiguration
+from modules.configuration import CONFIGURATION
 from cmu_graphics import *
 
 class Character():
     def __init__(self, app):
         self.x, self.y = app.width/2, app.height/2
-        self.lives = loadConfiguration()['startingLives']
+        self.lives = CONFIGURATION['startingLives']
         self.radius = 50
 
         self.app = app

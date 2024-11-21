@@ -2,7 +2,7 @@ from cmu_graphics import *
 from modules.character import Character
 from modules.enemy import Enemy
 from modules.patterns import findPattern, loadPatternChanges, loadPatterns
-from modules.configuration import loadConfiguration
+from modules.configuration import CONFIGURATION
 
 def restartGame(app, doFirstLoad):
     if not doFirstLoad:
@@ -11,8 +11,8 @@ def restartGame(app, doFirstLoad):
     app.score = 0
     app.accuracy = 100
 
-    app.enemies = []
-    app.enemies.append(Enemy(app))
+    app.enemies = set()
+    app.enemies.add(Enemy(app))
 
 def drawScore(app):
     drawLabel(f'Score: {app.score}', app.width, 0, size=100, align='right-top')
@@ -38,7 +38,7 @@ def onAppStart(app):
     
     app.mousePoints = []
 
-    app.enemySpawnDelay = loadConfiguration()['enemySpawnDelay']
+    app.enemySpawnDelay = CONFIGURATION['enemySpawnDelay']
     app.enemySpawnTick = 0
 
     restartGame(app, doFirstLoad=True)
@@ -61,8 +61,17 @@ def onMouseRelease(app, x, y):
     if len(app.mousePoints) > 1:
         app.lastPattern = findPattern(app.patterns, app.mousePoints, app.patternChanges)
         
+        toRemove = set()
+
         for enemy in app.enemies:
-                enemy.checkForPattern(app.lastPattern)
+            if enemy.hasPattern(app.lastPattern):
+                toRemove.add(enemy)
+
+        for enemy in toRemove:
+            enemy.patterns.pop()
+            
+            if len(enemy.patterns) == 0:
+                enemy.kill()  
 
 def onMouseDrag(app, x, y):
     app.mousePoints.append((x, app.height - y))
@@ -71,7 +80,7 @@ def onStep(app):
     app.enemySpawnTick += 1
 
     if app.enemySpawnTick >= app.enemySpawnDelay*app.stepsPerSecond:
-        app.enemies.append(Enemy(app))
+        app.enemies.add(Enemy(app))
 
         app.enemySpawnTick = 0
 

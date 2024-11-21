@@ -1,10 +1,11 @@
-from modules.configuration import loadConfiguration
+from modules.configuration import CONFIGURATION
 from modules.utilities import sign, distance, getCommaSeperatedStringFromList, randInRange
 from cmu_graphics import *
 import random
 
-
 class Enemy():
+    id = 0
+
     def __init__(self, app, x=None, y=None):
         self.radius = 30
 
@@ -20,9 +21,18 @@ class Enemy():
 
         self.x, self.y = x, y
         self.patterns = ['lor', 'triangle']
-        self.velocity = loadConfiguration()['enemyVelocity']
+        self.velocity = CONFIGURATION['enemyVelocity']
+
+        self.id = Enemy.id
+        Enemy.id += 1
 
         self.app = app
+
+    def __hash__(self):
+        return hash(self.id)
+    
+    def __eq__(self, other):
+        return isinstance(other, Enemy) and (self.id == other.id)
 
     def tick(self):
         charX, charY = self.app.character.x, self.app.character.y
@@ -35,15 +45,12 @@ class Enemy():
             app.character.takeLife()
 
     def kill(self):
-        self.app.enemies.pop(self.app.enemies.index(self))
-        self.app.score += loadConfiguration()['scorePerEnemyKilled']
+        self.app.enemies.remove(self)
+        self.app.score += CONFIGURATION['scorePerEnemyKilled']
 
-    def checkForPattern(self, pattern):
+    def hasPattern(self, pattern):
         if self.patterns[-1] == pattern:
-            self.patterns.pop()
-
-        if len(self.patterns) == 0:
-            self.kill()
+           return True
             
     def drawEnemy(self):
         drawCircle(self.x, self.y, self.radius, fill='green')

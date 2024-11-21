@@ -1,7 +1,7 @@
 import math
 
 from modules.utilities import *
-from modules.configuration import loadConfiguration
+from modules.configuration import CONFIGURATION
 
 def loadPatterns():
     return {
@@ -108,7 +108,7 @@ def findPattern(listOfPatterns, patternToCheck, directionChangesToCompare=None):
 
 def getDirectionalChanges(pattern, tolerance=None):
     if tolerance == None:
-        tolerance = loadConfiguration()['deltaSegmentTolerance']
+        tolerance = CONFIGURATION['deltaSegmentTolerance']
 
     directionalChanges = 0
     segmentsInLastChange = 0
