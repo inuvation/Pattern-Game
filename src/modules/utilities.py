@@ -2,6 +2,8 @@
 # https://www.youtube.com/watch?v=ERKDHZyZDwA (Dynamic time warping 1: Motivation)
 # https://www.youtube.com/watch?v=9GdbMc4CEhE (Dynamic time warping 2: Algorithm)
 
+import random
+
 def sign(n):
     if n < 0: return -1
     elif n == 0: return 0 
@@ -36,3 +38,18 @@ def normalise(matrix): # CREATED BY CHATGPT
     normalized_points = [(x / overall_max, y / overall_max) for x, y in translated_points]
 
     return normalized_points
+
+def getCommaSeperatedStringFromList(L):
+    string = ''
+
+    i = 0
+    for s in L:
+        if i == 0: string += s
+        else: string += f', {s}'
+        
+        i += 1
+
+    return string
+
+def randInRange(low, high):
+    return low + (high - low)*random.random()

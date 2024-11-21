@@ -1,17 +1,6 @@
 from cmu_graphics import *
 from modules.patterns import findPattern, loadPatternChanges, loadPatterns
-
-def getCommaSeperatedPatterns(patterns):
-    string = ''
-
-    i = 0
-    for pattern in patterns:
-        if i == 0: string += pattern
-        else: string += f', {pattern}'
-        
-        i += 1
-
-    return string
+from modules.utilities import getCommaSeperatedStringFromList
 
 def onMousePress(app, x, y):
     app.mousePoints = []
@@ -41,7 +30,7 @@ def redrawAll(app):
 
 def onAppStart(app):
     app.patterns = loadPatterns()
-    app.commaSeperatedPatterns = getCommaSeperatedPatterns(app.patterns)
+    app.commaSeperatedPatterns = getCommaSeperatedStringFromList(app.patterns)
     app.lastPattern = None
     app.patternChanges = loadPatternChanges(app.patterns)
     
