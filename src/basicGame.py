@@ -9,7 +9,6 @@ def restartGame(app, doFirstLoad):
         app.character.__init__(app)
 
     app.score = 0
-    app.accuracy = 100
 
     app.enemies = set()
     app.enemies.add(Enemy(app))
@@ -35,7 +34,6 @@ def drawPaused(app):
 
 def drawScore(app):
     drawLabel(f'Score: {app.score}', app.width, 0, size=100, align='right-top')
-    drawLabel(f'Accuracy: {app.accuracy}', app.width, 100, size=60, align='right-top')
 
 def drawMousePoints(app):
     if len(app.mousePoints) > 0:
