@@ -79,8 +79,8 @@ def getCost(normalPattern1, normalPattern2):
 def findPattern(listOfPatterns, patternToCheck, directionChangesToCompare=None):
     lowestCost, closestShape = None, None
 
-    normalisedPatternToCheck = normalise(patternToCheck)
-    patternToCheckDirectionChanges = getDirectionalChanges(normalisedPatternToCheck)
+    normalizedPatternToCheck = normalize(patternToCheck)
+    patternToCheckDirectionChanges = getDirectionalChanges(normalizedPatternToCheck)
 
     if directionChangesToCompare == None:
         directionChangesToCompare = loadPatternChanges(listOfPatterns)
@@ -93,8 +93,8 @@ def findPattern(listOfPatterns, patternToCheck, directionChangesToCompare=None):
             continue
 
         pattern = listOfPatterns[patternName]
-        fowardCost = getCost(normalisedPatternToCheck, pattern)
-        backwardCost = getCost(normalisedPatternToCheck, list(reversed(pattern)))
+        fowardCost = getCost(normalizedPatternToCheck, pattern)
+        backwardCost = getCost(normalizedPatternToCheck, list(reversed(pattern)))
         cost = min(fowardCost, backwardCost)
         if lowestCost == None or cost < lowestCost:
             lowestCost, closestShape = cost, patternName

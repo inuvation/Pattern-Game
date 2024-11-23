@@ -15,29 +15,26 @@ def distance(x1, y1, x2, y2):
 def createMatrix(rows, cols):
     return [([None] * cols) for row in range(rows)]
 
-def normalise(matrix): # CREATED BY CHATGPT
-    # Step 1: Translate the points to start at (0, 0)
-    x_coords = [point[0] for point in matrix]
-    y_coords = [point[1] for point in matrix]
+def normalize(matrix):
+    x = [point[0] for point in matrix]
+    y = [point[1] for point in matrix]
 
-    # Find the minimum x and y to translate the points
-    min_x = min(x_coords)
-    min_y = min(y_coords)
+    minX = min(x)
+    minY = min(y)
 
-    # Translate all points so that the minimum x and y become (0, 0)
-    translated_points = [(x - min_x, y - min_y) for x, y in matrix]
+    maxX = max(x)
+    maxY = max(y)
 
-    # Step 2: Normalize the points while preserving the aspect ratio
-    max_x = max([point[0] for point in translated_points])
-    max_y = max([point[1] for point in translated_points])
+    scaleBy = max(maxX - minX, maxY - minY)
 
-    # Calculate the overall maximum range to maintain aspect ratio
-    overall_max = max(max_x, max_y) if max(max_x, max_y) != 0 else 1
+    normalizedMatrix = []
+    for point in matrix:
+        originX, originY = point[0] - minX, point[1] - minY
+        normalizedX, normalizedY = originX / scaleBy, originY / scaleBy
 
-    # Normalize the points using the overall maximum
-    normalized_points = [(x / overall_max, y / overall_max) for x, y in translated_points]
+        normalizedMatrix.append((normalizedX, normalizedY))
 
-    return normalized_points
+    return normalizedMatrix
 
 def getCommaSeperatedStringFromList(L):
     string = ''
