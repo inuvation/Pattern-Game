@@ -3,6 +3,7 @@ from modules.utilities import sign, distance, getCommaSeperatedStringFromList, r
 from modules.combos import combo
 from cmu_graphics import *
 import random
+import math
 
 class Enemy():
     id = 0
@@ -18,7 +19,7 @@ class Enemy():
             else:
                 x = self.radius*2
 
-            y = randInRange(app.height/4, app.height*(3/4))
+            y = randInRange(app.height/8, app.height*(7/8))
 
         self.x, self.y = x, y
         self.patterns = combo()
@@ -36,8 +37,10 @@ class Enemy():
         return isinstance(other, Enemy) and (self.id == other.id)
 
     def moveToCharacter(self):
-        self.x += sign(self.app.character.x - self.x)*(self.velocity/app.stepsPerSecond)
-        self.y += sign(self.app.character.y - self.y)*(self.velocity/app.stepsPerSecond)
+        angleToCharacter = math.atan2(self.app.character.y - self.y, self.app.character.x - self.x)
+
+        self.x += math.cos(angleToCharacter)*(self.velocity/app.stepsPerSecond)
+        self.y += math.sin(angleToCharacter)*(self.velocity/app.stepsPerSecond)
 
     def kill(self):
         self.app.enemies.remove(self)
