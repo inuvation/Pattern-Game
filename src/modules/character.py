@@ -16,7 +16,7 @@ class Character():
         self.lives -= 1
 
         if self.lives <= 0:
-            self.app.onCharacterDeath(self)
+            self.app.onGameOver(app)
             
     def drawCharacter(self):
         drawCircle(self.x, self.y, self.radius)

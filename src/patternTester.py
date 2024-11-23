@@ -1,5 +1,5 @@
 from cmu_graphics import *
-from modules.patterns import findPattern, loadPatternChanges, loadPatterns
+from modules.patterns import findPattern, loadPatternChanges, PATTERNS
 from modules.utilities import getCommaSeperatedStringFromList
 
 def onMousePress(app, x, y):
@@ -29,10 +29,9 @@ def redrawAll(app):
             lastPointX, lastPointY = x, y
 
 def onAppStart(app):
-    app.patterns = loadPatterns()
-    app.commaSeperatedPatterns = getCommaSeperatedStringFromList(app.patterns)
+    app.commaSeperatedPatterns = getCommaSeperatedStringFromList(PATTERNS)
     app.lastPattern = None
-    app.patternChanges = loadPatternChanges(app.patterns)
+    app.patternChanges = loadPatternChanges(PATTERNS)
     
     print(f'loading shapes with pattern changes:', app.patternChanges)
 

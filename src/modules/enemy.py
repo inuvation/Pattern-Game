@@ -1,5 +1,6 @@
 from modules.configuration import CONFIGURATION
 from modules.utilities import sign, distance, getCommaSeperatedStringFromList, randInRange
+from modules.combos import combo
 from cmu_graphics import *
 import random
 
@@ -20,7 +21,7 @@ class Enemy():
             y = randInRange(app.height/4, app.height*(3/4))
 
         self.x, self.y = x, y
-        self.patterns = ['lor', 'triangle']
+        self.patterns = combo()
         self.velocity = CONFIGURATION['enemyVelocity']
 
         self.id = Enemy.id
@@ -34,15 +35,9 @@ class Enemy():
     def __eq__(self, other):
         return isinstance(other, Enemy) and (self.id == other.id)
 
-    def tick(self):
-        charX, charY = self.app.character.x, self.app.character.y
-
-        self.x += sign(charX - self.x)*(self.velocity/app.stepsPerSecond)
-        self.y += sign(charY - self.y)*(self.velocity/app.stepsPerSecond)
-
-        if distance(self.x, self.y, charX, charY) <= app.character.radius + self.radius:
-            self.kill()
-            app.character.takeLife()
+    def moveToCharacter(self):
+        self.x += sign(self.app.character.x - self.x)*(self.velocity/app.stepsPerSecond)
+        self.y += sign(self.app.character.y - self.y)*(self.velocity/app.stepsPerSecond)
 
     def kill(self):
         self.app.enemies.remove(self)

@@ -1,5 +1,5 @@
 from cmu_graphics import *
-from modules.patterns import dynamicTimeWarpCost, loadPatterns
+from modules.patterns import dynamicTimeWarpCost, PATTERNS
 
 import math
 
@@ -68,12 +68,11 @@ def redrawAll(app):
     drawGraph(app, app.pattern1, gridX, verticalGraphY, gridW, graphW, True) 
 
 def onAppStart(app):
-    app.patterns = loadPatterns()
     app.margin = 16
     app.padding = 16
 
-    app.pattern1 = app.patterns['land']
-    app.pattern2 = app.patterns['lor']
+    app.pattern1 = PATTERNS['land']
+    app.pattern2 = PATTERNS['lor']
 
     app.costMatrix = dynamicTimeWarpCost(app.pattern1, app.pattern2)
 
