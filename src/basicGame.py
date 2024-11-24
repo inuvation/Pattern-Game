@@ -9,6 +9,8 @@ def restartGame(app, doFirstLoad):
     if not doFirstLoad:
         app.character.__init__(app)
 
+    app.mousePoints = []
+
     app.score = 0
 
     app.enemies = set()
@@ -28,6 +30,7 @@ def restartGame(app, doFirstLoad):
 
 def onGameOver(app):
     app.gameOver = True
+    app.mousePoints = []
 
 def startWave(app, wave):
     app.waveBanner = True
@@ -74,8 +77,6 @@ def onAppStart(app):
     app.lastPattern = None
     app.patternChanges = loadPatternChanges(PATTERNS)
     
-    app.mousePoints = []
-
     restartGame(app, doFirstLoad=True)
     app.onGameOver = onGameOver # Must be called from the character file
 
