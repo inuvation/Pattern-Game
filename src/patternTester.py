@@ -7,7 +7,7 @@ def onMousePress(app, x, y):
 
 def onMouseRelease(app, x, y):
     if len(app.mousePoints) > 1:
-        app.lastPattern = findPattern(app.patterns, app.mousePoints, app.patternChanges)
+        app.lastPattern = findPattern(PATTERNS, app.mousePoints, app.patternChanges)
 
 def onMouseDrag(app, x, y):
     app.mousePoints.append((x, app.height - y))
