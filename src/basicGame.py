@@ -3,6 +3,7 @@ from modules.character import Character
 from modules.enemy import Enemy
 from modules.patterns import findPattern, loadPatternChanges, PATTERNS
 from modules.configuration import CONFIGURATION
+from modules.timer import Timer
 
 def restartGame(app, doFirstLoad):
     if not doFirstLoad:
@@ -14,10 +15,31 @@ def restartGame(app, doFirstLoad):
     app.enemies.add(Enemy(app))
 
     app.paused = False
+    app.internalPause = False
     app.gameOver = False
+
+    for timer in Timer.timers:
+        Timer.defer(timer.destroy)
+
+    app.tick = 0
+    Timer(app, CONFIGURATION['enemySpawnDelay'], True, Enemy.spawn)
+
+    startWave(app, 1)
 
 def onGameOver(app):
     app.gameOver = True
+
+def startWave(app, wave):
+    app.waveBanner = True
+    app.wave = wave
+
+    Timer(app, 1, False, lambda _: setattr(app, 'waveBanner', False)) # ChatGPT taught me setattr and lambda functions
+
+def drawWaveBanner(app):
+    w, h = app.width/3, app.height/5
+
+    drawRect((app.width - w)/2, (app.height - h)/2, w, h, fill='gray')
+    drawLabel(f'Wave: {app.wave}', app.width/2, app.height/2, size = h/2)
 
 def drawGameOver(app):
     w, h = app.width/3, app.height/5
@@ -54,9 +76,6 @@ def onAppStart(app):
     
     app.mousePoints = []
 
-    app.enemySpawnDelay = CONFIGURATION['enemySpawnDelay']
-    app.enemySpawnTick = 0
-
     restartGame(app, doFirstLoad=True)
     app.onGameOver = onGameOver # Must be called from the character file
 
@@ -70,6 +89,9 @@ def redrawAll(app):
     drawMousePoints(app)
 
     drawScore(app)
+
+    if app.waveBanner:
+        drawWaveBanner(app)
 
     if app.gameOver:
         drawGameOver(app)
@@ -110,24 +132,19 @@ def onStep(app):
         takeStep(app)
 
 def takeStep(app):
-    app.enemySpawnTick += 1
+    app.tick += 1
 
-    if app.enemySpawnTick >= app.enemySpawnDelay*app.stepsPerSecond:
-        app.enemies.add(Enemy(app))
+    Timer.runDeffered()
 
-        app.enemySpawnTick = 0
-
-    toRemove = set()
+    for timer in Timer.timers:
+        timer.tick(app)
 
     for enemy in app.enemies:
         enemy.moveToCharacter()
 
         if distance(enemy.x, enemy.y, app.character.x, app.character.y) <= app.character.radius + enemy.radius:
-            app.character.takeLife()
-            toRemove.add(enemy)
-
-    for enemy in toRemove:
-        enemy.kill()
+            Timer.defer(app.character.takeLife)
+            Timer.defer(enemy.kill)
 
 def main():
     app = runApp(width=1208, height=720)

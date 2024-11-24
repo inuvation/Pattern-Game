@@ -1,5 +1,5 @@
 from modules.configuration import CONFIGURATION
-from modules.utilities import sign, distance, getCommaSeperatedStringFromList, randInRange
+from modules.utilities import getCommaSeperatedStringFromList, randInRange
 from modules.combos import combo
 from cmu_graphics import *
 import random
@@ -53,3 +53,7 @@ class Enemy():
     def drawEnemy(self):
         drawCircle(self.x, self.y, self.radius, fill='green')
         drawLabel(getCommaSeperatedStringFromList(self.patterns), self.x, self.y + self.radius, align='top')
+
+    @staticmethod
+    def spawn(app):
+        app.enemies.add(Enemy(app))
