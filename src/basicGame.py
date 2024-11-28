@@ -4,6 +4,7 @@ from modules.enemy import Enemy
 from modules.patterns import findPattern, loadPatternChanges, PATTERNS
 from modules.configuration import CONFIGURATION
 from modules.timer import Timer
+from modules.waves import startWave
 
 def restartGame(app, doFirstLoad):
     if not doFirstLoad:
@@ -14,35 +15,25 @@ def restartGame(app, doFirstLoad):
     app.score = 0
 
     app.enemies = set()
-    app.enemies.add(Enemy(app))
 
     app.paused = False
     app.internalPause = False
     app.gameOver = False
 
-    for timer in Timer.timers:
-        Timer.defer(timer.destroy)
-
     app.tick = 0
-    Timer(app, CONFIGURATION['enemySpawnDelay'], True, Enemy.spawn)
 
-    startWave(app, 1)
+    app.waveIndex = 0
+    startWave(app)
 
 def onGameOver(app):
     app.gameOver = True
     app.mousePoints = []
 
-def startWave(app, wave):
-    app.waveBanner = True
-    app.wave = wave
-
-    Timer(app, 1, False, lambda _: setattr(app, 'waveBanner', False)) # ChatGPT taught me setattr and lambda functions
-
 def drawWaveBanner(app):
     w, h = app.width/3, app.height/5
 
     drawRect((app.width - w)/2, (app.height - h)/2, w, h, fill='gray')
-    drawLabel(f'Wave: {app.wave}', app.width/2, app.height/2, size = h/2)
+    drawLabel(f'Wave: {app.waveIndex}', app.width/2, app.height/2, size = h/2)
 
 def drawGameOver(app):
     w, h = app.width/3, app.height/5
@@ -77,8 +68,10 @@ def onAppStart(app):
     app.lastPattern = None
     app.patternChanges = loadPatternChanges(PATTERNS)
     
-    restartGame(app, doFirstLoad=True)
     app.onGameOver = onGameOver # Must be called from the character file
+
+    restartGame(app, doFirstLoad=True)
+
 
 def redrawAll(app):
     app.character.drawCharacter()

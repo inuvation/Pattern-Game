@@ -1,6 +1,7 @@
 from modules.configuration import CONFIGURATION
 from modules.utilities import getCommaSeperatedStringFromList, randInRange
-from modules.combos import combo
+import modules.waves 
+from modules.timer import Timer
 from cmu_graphics import *
 import random
 import math
@@ -8,7 +9,7 @@ import math
 class Enemy():
     id = 0
 
-    def __init__(self, app, x=None, y=None):
+    def __init__(self, app, patterns, x=None, y=None):
         self.radius = 30
 
         if x == None or y == None:
@@ -22,13 +23,15 @@ class Enemy():
             y = randInRange(app.height/8, app.height*(7/8))
 
         self.x, self.y = x, y
-        self.patterns = combo()
-        self.velocity = CONFIGURATION['enemyVelocity']
+        self.velocity = app.enemyVelocity
+
+        self.patterns = patterns
 
         self.id = Enemy.id
         Enemy.id += 1
 
         self.app = app
+        app.enemies.add(self)
 
     def __hash__(self):
         return hash(self.id)
@@ -46,6 +49,9 @@ class Enemy():
         self.app.enemies.remove(self)
         self.app.score += CONFIGURATION['scorePerEnemyKilled']
 
+        if len(self.app.enemies) == 0:
+            Timer(app, 1, 1, modules.waves.startWave)
+
     def hasPattern(self, pattern):
         if self.patterns[-1] == pattern:
            return True
@@ -53,7 +59,3 @@ class Enemy():
     def drawEnemy(self):
         drawCircle(self.x, self.y, self.radius, fill='green')
         drawLabel(getCommaSeperatedStringFromList(self.patterns), self.x, self.y + self.radius, align='top')
-
-    @staticmethod
-    def spawn(app):
-        app.enemies.add(Enemy(app))

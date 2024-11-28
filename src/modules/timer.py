@@ -4,12 +4,13 @@ class Timer():
 
     nextId = 0
 
-    def __init__(self, app, length, looping, callback):
+    def __init__(self, app, length, loops, callback):
         self.length = length
 
         self.endTick = app.tick + length*app.stepsPerSecond
 
-        self.looping = looping
+        self.currentLoop = 0
+        self.loops = loops
 
         self.callback = callback
 
@@ -31,7 +32,9 @@ class Timer():
         if app.tick >= self.endTick:
             self.callback(app)
 
-            if self.looping:
+            self.currentLoop += 1
+
+            if self.loops == 0 or self.currentLoop < self.loops:
                 self.endTick = app.tick + self.length*app.stepsPerSecond
             else:
                 Timer.defer(self.destroy)
