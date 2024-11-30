@@ -1,6 +1,9 @@
 from modules.configuration import CONFIGURATION
 from cmu_graphics import *
 
+heart = 'src/images/heart.png' # Taken from flatIcon (https://www.flaticon.com/free-icon/heart_9484251)
+earth = 'src/images/earth.png' # Taken from flatIcon (https://www.flaticon.com/free-icon/heart_9484251)
+
 class Character():
     def __init__(self, app):
         self.x, self.y = app.width/2, app.height/2
@@ -19,8 +22,8 @@ class Character():
             app.onGameOver(self.app)
             
     def drawCharacter(self):
-        drawCircle(self.x, self.y, self.radius)
+        drawImage(earth, self.x - self.radius, self.y - self.radius, width=self.radius*2, height = self.radius*2, opacity=50)
 
     def drawLives(self):
         for i in range(self.lives):
-            drawCircle(50 + 100*i, 50, 50, fill='red')
+            drawImage(heart, 0+ 100*i, 0, width=100, height=100)

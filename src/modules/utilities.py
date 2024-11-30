@@ -50,3 +50,6 @@ def getCommaSeperatedStringFromList(L):
 
 def randInRange(low, high):
     return low + (high - low)*random.random()
+
+def clamp(n, low, high):
+    return max(low, min(high, n))   

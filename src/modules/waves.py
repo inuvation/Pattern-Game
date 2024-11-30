@@ -1,15 +1,16 @@
+from cmu_graphics import *
 from modules.timer import Timer
-from modules.configuration import CONFIGURATION
 from modules.combos import *
+from uiElements import drawFrame
 
 WAVES = [
     {
-        'Velocity': 60,
+        'Velocity': 40,
         'SpawnDelay': 2,
         'Amount': [(randomCombo(2), 1), (sameCombo(2), 1)]
     },
     {
-        'Velocity': 70,
+        'Velocity': 50,
         'SpawnDelay': 2,
         'Amount': [(repeatedCombo(2, 3), 1)]
     },
@@ -44,3 +45,10 @@ def startWave(app):
     app.enemySpawnDelay = wave['SpawnDelay']
 
     Timer.defer(lambda: buildWave(app, wave['Amount']))
+
+
+def drawWaveBanner(app):
+    w, h = app.width/3, app.height/5
+    x, y, = (app.width - w) / 2, (app.height - h) / 2
+    
+    drawFrame(app, x, y, w, h, text=f'Wave: {app.waveIndex}')

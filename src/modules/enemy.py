@@ -6,11 +6,13 @@ from cmu_graphics import *
 import random
 import math
 
+asteroid = 'src/images/asteroid.png' # Taken from flatIcon (https://www.flaticon.com/free-icon/asteroid_2530826?term=asteroid&page=1&position=2&origin=search&related_id=2530826)
+
 class Enemy():
     id = 0
 
     def __init__(self, app, patterns, x=None, y=None):
-        self.radius = 30
+        self.radius = 50
 
         if x == None or y == None:
             randNum = random.random()
@@ -41,7 +43,7 @@ class Enemy():
 
     def moveToCharacter(self):
         angleToCharacter = math.atan2(self.app.character.y - self.y, self.app.character.x - self.x)
-
+                
         self.x += math.cos(angleToCharacter)*(self.velocity/app.stepsPerSecond)
         self.y += math.sin(angleToCharacter)*(self.velocity/app.stepsPerSecond)
 
@@ -57,5 +59,6 @@ class Enemy():
            return True
             
     def drawEnemy(self):
-        drawCircle(self.x, self.y, self.radius, fill='green')
-        drawLabel(getCommaSeperatedStringFromList(self.patterns), self.x, self.y + self.radius, align='top')
+        # drawCircle(self.x, self.y, self.radius, fill='green')
+        drawImage(asteroid, self.x - self.radius, self.y - self.radius, width=self.radius*2, height = self.radius*2)
+        drawLabel(getCommaSeperatedStringFromList(self.patterns), self.x, self.y + self.radius, align='top', fill='white')
