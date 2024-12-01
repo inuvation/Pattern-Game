@@ -6,19 +6,19 @@ from uiElements import drawFrame
 WAVES = [
     {
         'Velocity': 30,
-        'SpawnDelay': 1,
-        'Amount': [(randomCombo(2), 1), (sameCombo(2), 1)]
+        'SpawnDelay': 4,
+        'Amount': [(randomCombo(2), 2), (sameCombo(2), 2), (randomCombo(2), 1), (sameCombo(3), 1)]
     },
     {
         'Velocity': 40,
-        'SpawnDelay': 5,
-        'Amount': [(repeatedCombo(2, 1), 1), (randomCombo(3), 1)]
+        'SpawnDelay': 3,
+        'Amount': [(repeatedCombo(2, 1), 2), (sameCombo(3), 2), (randomCombo(3), 3)]
     },
-    # {
-    #     'Velocity': 50,
-    #     'SpawnDelay': 4,
-    #     'Amount': [(repeatedCombo(2, 2), 1), (randomCombo(3), 3), (sameCombo(4), 2)]
-    # },
+    {
+        'Velocity': 30,
+        'SpawnDelay': 1,
+        'Amount': [(repeatedCombo(4, 2), 1)]
+    },
 ]
 
 def buildWave(app, wave):
