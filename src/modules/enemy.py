@@ -58,7 +58,7 @@ class Enemy():
         if reward:
             self.app.score += CONFIGURATION['scorePerEnemyKilled']
 
-        if len(self.app.enemies) == 0:
+        if len(self.app.enemies) == 0 and self.app.lastEnemy:
             Timer(app, 1, 1, modules.waves.startWave)
 
     def hasPattern(self, pattern):

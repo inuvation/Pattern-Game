@@ -6,41 +6,42 @@ from uiElements import drawFrame
 WAVES = [
     {
         'Velocity': 30,
-        'SpawnDelay': 6,
-        'Amount': [(randomCombo(2), 3), (sameCombo(2), 3)]
+        'SpawnDelay': 1,
+        'Amount': [(randomCombo(2), 1), (sameCombo(2), 1)]
     },
     {
         'Velocity': 40,
         'SpawnDelay': 5,
-        'Amount': [(repeatedCombo(2, 1), 2), (randomCombo(3), 3)]
+        'Amount': [(repeatedCombo(2, 1), 1), (randomCombo(3), 1)]
     },
-    {
-        'Velocity': 50,
-        'SpawnDelay': 4,
-        'Amount': [(repeatedCombo(2, 2), 1), (randomCombo(3), 3), (sameCombo(4), 2)]
-    },
+    # {
+    #     'Velocity': 50,
+    #     'SpawnDelay': 4,
+    #     'Amount': [(repeatedCombo(2, 2), 1), (randomCombo(3), 3), (sameCombo(4), 2)]
+    # },
 ]
 
 def buildWave(app, wave):
+    app.lastEnemy = False
+
     Timer(app, 1, 1, lambda _: setattr(app, 'waveBanner', False)) # ChatGPT taught me setattr and lambda functions
     
     cumulativeTime = 0
 
     for comboType in wave:
         for i in range(comboType[1]):
-            Timer(app, cumulativeTime, 1, comboType[0].spawn)
-
             cumulativeTime += app.enemySpawnDelay
 
-    Timer(app, cumulativeTime + app.enemySpawnDelay, 1, lambda _: setattr(app, 'lastEnemy', True))
+            Timer(app, cumulativeTime, 1, comboType[0].spawn)
 
+    Timer(app, cumulativeTime, 1, lambda _: setattr(app, 'lastEnemy', True))
 
 def startWave(app):
     app.waveBanner = True
     app.waveIndex = app.waveIndex + 1
     
     if app.waveIndex > len(WAVES):
-        app.onGameOver(app)
+        app.onGameOver(app, won=True)
 
         return
 
@@ -56,4 +57,4 @@ def drawWaveBanner(app):
     w, h = app.width/3, app.height/5
     x, y, = (app.width - w) / 2, (app.height - h) / 2
     
-    drawFrame(app, x, y, w, h, text=f'Wave: {app.waveIndex}')
+    drawFrame(app, x, y, w, h, text=f'Wave {app.waveIndex}')

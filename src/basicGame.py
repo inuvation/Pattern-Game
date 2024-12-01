@@ -23,17 +23,20 @@ def restartGame(app, doFirstLoad):
     app.score = 0
 
     app.enemies = set()
+    app.lastEnemy = False
 
     app.paused = False
     app.internalPause = False
     app.gameOver = False
+    app.won = False
 
     app.tick = 0
 
     app.waveIndex = 0
     startWave(app)
 
-def onGameOver(app):
+def onGameOver(app, won):
+    app.won = won
     app.gameOver = True
     app.mousePoints = []
  
@@ -41,7 +44,7 @@ def drawGameOver(app):
     w, h = app.width/3, app.height/5
 
     drawFrame(app, (app.width - w)/2, (app.height - h)/2, w, h)
-    drawLabel('Game over!', app.width/2, (app.height - h)/2 + app.margins*3, size = h/3.5, align='top', fill=app.textColor, font=app.font)
+    drawLabel(app.won and 'You win!' or'Game over!', app.width/2, (app.height - h)/2 + app.margins*3, size = h/3.5, align='top', fill=app.textColor, font=app.font)
     drawLabel('Press any key to restart', app.width/2, (app.height - h)/2 + h - app.margins*3, size = h/5, align='bottom', fill=app.textColor, font=app.font)
 
 def drawPaused(app):
@@ -163,9 +166,10 @@ def onMouseRelease(app, x, y):
                 enemy.patterns.pop()
                 
                 if len(enemy.patterns) == 0:
-                    enemy.kill(reward=False)  
+                    enemy.kill(reward=True)  
 
-            app.score += CONFIGURATION['scorePerEnemyKilled']*(len(toRemove)**2) # Give a bonus for comboing Enemies
+            if len(toRemove) > 1: # Give a bonus for comboing patterns
+                app.score += CONFIGURATION['comboBonus']*(len(toRemove)**2)
     else:
         if app.pressed and not app.starting:
             app.starting = True

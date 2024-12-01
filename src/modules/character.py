@@ -22,7 +22,7 @@ class Character():
         self.lives -= 1
 
         if self.lives <= 0:
-            app.onGameOver(self.app)
+            app.onGameOver(self.app, won=False)
             
     def drawCharacter(self):
         # drawImage(earth, self.x - self.radius, self.y - self.radius, width=self.radius*2, height = self.radius*2)
