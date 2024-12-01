@@ -6,7 +6,7 @@ class Character():
     def __init__(self, app):
         self.x, self.y = app.width/2, app.height/2
         self.lives = CONFIGURATION['startingLives']
-        self.radius = 50
+        self.radius = 100
 
         self.landMasses = generateLandMasses(self.x, self.y, self.radius, 4) # Note: This will break if moving is added to the character as coordinates are "baked" into the generated polygon
 
