@@ -1,7 +1,7 @@
 from modules.configuration import CONFIGURATION
 from modules.utilities import getCommaSeperatedStringFromList, randInRange
 from modules.patterns import drawShape
-from uiElements import drawFrame, drawAsteroid, generateCraters
+from uiElements import drawFrame, drawAsteroid, generateCraters, drawHeart
 import modules.waves 
 from modules.timer import Timer
 from cmu_graphics import *
@@ -64,6 +64,39 @@ class Enemy():
             
     def drawEnemy(self):
         drawAsteroid(self.craters, self.x, self.y, self.radius)
+
+        shapePadding = app.margins*2
+        shapeSize = 64
+        numShapes = len(self.patterns)
+        w = numShapes*shapeSize + (numShapes + 1)*shapePadding
+
+        drawFrame(app, self.x - w/2, self.y + self.radius, w, shapeSize + shapePadding*2)
+
+        for i in range(numShapes):
+            drawShape(self.patterns[i], self.x - w/2 + (i + 1)*(shapePadding) + i*shapeSize, self.y + self.radius + shapePadding, shapeSize, shapeSize, fill=(i == (numShapes - 1) and 'white' or 'gray'))
+
+class HeartGivingStar(Enemy):
+    def __init__(self, app):
+        super().__init__(app, ['heart'])
+        self.velocity = CONFIGURATION['heartVelocity']
+        self.x = self.radius*2
+        self.angle = randInRange(math.radians(25), math.radians(35))
+
+
+    def kill(self, reward=False):
+        self.app.enemies.remove(self)
+
+        self.app.character.lives += 1
+
+    def moveToCharacter(self):
+        self.x += math.cos(self.angle)*(self.velocity/app.stepsPerSecond)
+        self.y += math.sin(self.angle)*(self.velocity/app.stepsPerSecond)
+
+        if self.x - self.radius > self.app.width or self.y - self.radius > self.app.height:
+            Timer.defer(lambda: self.app.enemies.remove(self))
+
+    def drawEnemy(self):
+        drawHeart(app, self.x - self.radius, self.y - self.radius, self.radius*2, self.radius*2)
 
         shapePadding = app.margins*2
         shapeSize = 64

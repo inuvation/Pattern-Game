@@ -1,6 +1,7 @@
 from cmu_graphics import *
 from modules.timer import Timer
 from modules.combos import *
+from modules.enemy import HeartGivingStar
 from uiElements import drawFrame
 
 WAVES = [
@@ -12,7 +13,7 @@ WAVES = [
     {
         'Velocity': 40,
         'SpawnDelay': 3,
-        'Amount': [(repeatedCombo(2, 1), 2), (sameCombo(3), 2), (randomCombo(3), 3)]
+        'Amount': [(repeatedCombo(2, 1), 2), (sameCombo(3), 2), 'heart', (randomCombo(3), 2), (randomCombo(3), 2)]
     },
     {
         'Velocity': 30,
@@ -29,10 +30,13 @@ def buildWave(app, wave):
     cumulativeTime = 0
 
     for comboType in wave:
-        for i in range(comboType[1]):
-            cumulativeTime += app.enemySpawnDelay
+        cumulativeTime += app.enemySpawnDelay
 
-            Timer(app, cumulativeTime, 1, comboType[0].spawn)
+        if comboType == 'heart':
+            Timer(app, cumulativeTime, 1, HeartGivingStar)
+        else:
+            for i in range(comboType[1]):
+                Timer(app, cumulativeTime, 1, comboType[0].spawn)
 
     Timer(app, cumulativeTime, 1, lambda _: setattr(app, 'lastEnemy', True))
 

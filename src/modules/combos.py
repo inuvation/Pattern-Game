@@ -3,11 +3,13 @@ from modules.utilities import randInRange
 import modules.enemy
 import random
 
+filtedPatterns = [key for key in PATTERNS.keys() if key != 'heart']
+
 def getRandomPatterns(amount, replacement=False):
     if replacement:
-        return random.choices(list(PATTERNS.keys()), k=amount)
+        return random.choices(list(filtedPatterns), k=amount)
     else:
-        return random.sample(list(PATTERNS.keys()), k=amount)        
+        return random.sample(list(filtedPatterns), k=amount)        
 
 class BaseCombo():
     def spawn(self, app):
