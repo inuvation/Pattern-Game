@@ -8,9 +8,6 @@ from cmu_graphics import *
 import random
 import math
 
-
-asteroid = 'src/images/asteroid.png' # Taken from flatIcon (https://www.flaticon.com/free-icon/asteroid_2530826?term=asteroid&page=1&position=2&origin=search&related_id=2530826)
-
 class Enemy():
     id = 0
 

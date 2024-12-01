@@ -8,8 +8,6 @@ from modules.background import drawBackground, BackgroundStar, ShootingStar
 from modules.configuration import CONFIGURATION
 from uiElements import drawFrame
 
-background = 'src/images/background.png' # Generated with Microsoft Designer
-
 def startGame(app):
     restartGame(app, doFirstLoad=True)
     app.started = True

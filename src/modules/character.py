@@ -2,9 +2,6 @@ from modules.configuration import CONFIGURATION
 from uiElements import drawHeart, drawEarth, generateLandMasses
 from cmu_graphics import *
 
-heart = 'src/images/heart.png' # Taken from flatIcon (https://www.flaticon.com/free-icon/heart_9484251)
-earth = 'src/images/earth.png' # Taken from flatIcon (https://www.flaticon.com/free-icon/heart_9484251)
-
 class Character():
     def __init__(self, app):
         self.x, self.y = app.width/2, app.height/2
@@ -25,8 +22,6 @@ class Character():
             app.onGameOver(self.app, won=False)
             
     def drawCharacter(self):
-        # drawImage(earth, self.x - self.radius, self.y - self.radius, width=self.radius*2, height = self.radius*2)
-        # drawCircle(self.x, self.y, self.radius, fill='green')
         drawEarth(self.landMasses, self.x, self.y, self.radius)
 
     def drawLives(self):
