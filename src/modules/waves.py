@@ -30,12 +30,14 @@ def buildWave(app, wave):
     cumulativeTime = 0
 
     for comboType in wave:
-        cumulativeTime += app.enemySpawnDelay
-
         if comboType == 'heart':
+            cumulativeTime += app.enemySpawnDelay
+
             Timer(app, cumulativeTime, 1, HeartGivingStar)
         else:
             for i in range(comboType[1]):
+                cumulativeTime += app.enemySpawnDelay
+
                 Timer(app, cumulativeTime, 1, comboType[0].spawn)
 
     Timer(app, cumulativeTime, 1, lambda _: setattr(app, 'lastEnemy', True))
