@@ -1,5 +1,5 @@
 CONFIGURATION = {
     'deltaSegmentTolerance': 15,
     'startingLives': 3,
-    'scorePerEnemyKilled': 50
+    'scorePerEnemyKilled': 10
 }

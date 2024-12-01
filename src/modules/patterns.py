@@ -2,6 +2,7 @@ import math
 
 from modules.utilities import *
 from modules.configuration import CONFIGURATION
+from cmu_graphics import *
 
 PATTERNS = {
     'verticalLine': [
@@ -144,3 +145,19 @@ def loadPatternChanges(patterns):
         directionalChanges[patternName] = getDirectionalChanges(pattern, 0)
 
     return directionalChanges
+
+def drawShape(shape, x, y, w, h, fill='white'):
+    lastX, lastY = None, None
+    
+    for (localX, localY) in PATTERNS[shape]:
+        newX, newY = x + localX*w, y + h - localY*h
+
+        if shape == 'horizontalLine':
+            newY -= h/2
+        elif shape == 'verticalLine':
+            newX += w/2
+
+        if not (lastX == None or lastY == None):
+            drawLine(newX, newY, lastX, lastY, fill=fill, lineWidth=4)
+
+        lastX, lastY = newX, newY

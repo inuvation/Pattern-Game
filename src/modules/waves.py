@@ -5,14 +5,19 @@ from uiElements import drawFrame
 
 WAVES = [
     {
+        'Velocity': 30,
+        'SpawnDelay': 6,
+        'Amount': [(randomCombo(2), 3), (sameCombo(2), 3)]
+    },
+    {
         'Velocity': 40,
-        'SpawnDelay': 2,
-        'Amount': [(randomCombo(2), 1), (sameCombo(2), 1)]
+        'SpawnDelay': 5,
+        'Amount': [(repeatedCombo(2, 1), 2), (randomCombo(3), 3)]
     },
     {
         'Velocity': 50,
-        'SpawnDelay': 2,
-        'Amount': [(repeatedCombo(2, 3), 1)]
+        'SpawnDelay': 4,
+        'Amount': [(repeatedCombo(2, 2), 1), (randomCombo(3), 3), (sameCombo(4), 2)]
     },
 ]
 

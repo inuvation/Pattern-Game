@@ -1,4 +1,5 @@
 from modules.configuration import CONFIGURATION
+from uiElements import drawHeart, drawEarth, generateLandMasses
 from cmu_graphics import *
 
 heart = 'src/images/heart.png' # Taken from flatIcon (https://www.flaticon.com/free-icon/heart_9484251)
@@ -9,6 +10,8 @@ class Character():
         self.x, self.y = app.width/2, app.height/2
         self.lives = CONFIGURATION['startingLives']
         self.radius = 50
+
+        self.landMasses = generateLandMasses(self.x, self.y, self.radius, 4) # Note: This will break if moving is added to the character as coordinates are "baked" into the generated polygon
 
         self.app = app
 
@@ -22,8 +25,10 @@ class Character():
             app.onGameOver(self.app)
             
     def drawCharacter(self):
-        drawImage(earth, self.x - self.radius, self.y - self.radius, width=self.radius*2, height = self.radius*2, opacity=50)
+        # drawImage(earth, self.x - self.radius, self.y - self.radius, width=self.radius*2, height = self.radius*2)
+        # drawCircle(self.x, self.y, self.radius, fill='green')
+        drawEarth(self.landMasses, self.x, self.y, self.radius)
 
     def drawLives(self):
         for i in range(self.lives):
-            drawImage(heart, 0+ 100*i, 0, width=100, height=100)
+            drawHeart(self.app, app.margins*2 + (100 + app.margins)*i, app.margins, 100 - app.margins*2, 100 - app.margins*2)

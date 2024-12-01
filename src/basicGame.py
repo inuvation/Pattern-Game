@@ -5,6 +5,7 @@ from modules.timer import Timer
 from modules.waves import startWave, drawWaveBanner
 from modules.utilities import clamp
 from modules.background import drawBackground, BackgroundStar, ShootingStar
+from modules.configuration import CONFIGURATION
 from uiElements import drawFrame
 
 background = 'src/images/background.png' # Generated with Microsoft Designer
@@ -35,13 +36,13 @@ def restartGame(app, doFirstLoad):
 def onGameOver(app):
     app.gameOver = True
     app.mousePoints = []
-
+ 
 def drawGameOver(app):
     w, h = app.width/3, app.height/5
 
-    drawRect((app.width - w)/2, (app.height - h)/2, w, h, fill='gray')
-    drawLabel('Game over!', app.width/2, (app.height - h)/2 + 8, size = h/2, align='top', fill=app.textColor, font=app.font)
-    drawLabel('Press any key to restart', app.width/2, (app.height - h)/2 + h - 8, size = h/4, align='bottom', fill=app.textColor, font=app.font)
+    drawFrame(app, (app.width - w)/2, (app.height - h)/2, w, h)
+    drawLabel('Game over!', app.width/2, (app.height - h)/2 + app.margins*3, size = h/3.5, align='top', fill=app.textColor, font=app.font)
+    drawLabel('Press any key to restart', app.width/2, (app.height - h)/2 + h - app.margins*3, size = h/5, align='bottom', fill=app.textColor, font=app.font)
 
 def drawPaused(app):
     w, h = app.width/6, app.height/8
@@ -49,16 +50,25 @@ def drawPaused(app):
     drawRect((app.width - w)/2, 0, w, h, fill='gray')
     drawLabel('Paused', app.width/2, h/2, size = h/2, fill=app.textColor, font=app.font)
 
+def drawPoints(app, points, opacity=100):
+    lastPointX = lastPointY = None
+
+    for (x, y) in points:
+        y = app.height - y
+
+        if lastPointX != None and lastPointY != None:
+            drawLine(x, y, lastPointX, lastPointY, fill='white', lineWidth=4, opacity=opacity)
+        lastPointX, lastPointY = x, y
+
 def drawMousePoints(app):
     if len(app.mousePoints) > 0:
-        lastPointX = lastPointY = None
+        drawPoints(app, app.mousePoints)
 
-        for (x, y) in app.mousePoints:
-            y = app.height - y
-
-            if lastPointX != None and lastPointY != None:
-                drawLine(x, y, lastPointX, lastPointY, fill='white')
-            lastPointX, lastPointY = x, y
+    if len(app.fadingMousePoints) > 0:
+        for tickOfPoints in app.fadingMousePoints:
+            points = app.fadingMousePoints[tickOfPoints]
+            opacity = clamp(100*(1 - ((app.tick - tickOfPoints) / app.stepsPerSecond)), 0, 100)
+            drawPoints(app, points, opacity=opacity)
 
 def drawStartScreen(app):
     drawRect(app.startX - 4, app.startY + 4, app.w, app.h, fill=app.secondaryColor, opacity=app.opacityFactor)
@@ -97,6 +107,7 @@ def onAppStart(app):
     # Game Mechanics
     app.character = Character(app)
     app.lastPattern = None
+    app.fadingMousePoints = dict()
     app.patternChanges = loadPatternChanges(PATTERNS)
     app.onGameOver = onGameOver # Must be called from the character file
     app.paused = False
@@ -130,34 +141,40 @@ def redrawAll(app):
             drawPaused(app)
 
 def onMousePress(app, x, y):
-    app.mousePoints = []
-
     if app.hovered:
         app.pressed = True
 
 def onMouseRelease(app, x, y):
-    if len(app.mousePoints) > 1:
-        app.lastPattern = findPattern(PATTERNS, app.mousePoints, app.patternChanges)
-        
-        toRemove = set()
+    if app.started:
+        if len(app.mousePoints) > 1:
+            currentTick = app.tick
+            app.lastPattern = findPattern(PATTERNS, app.mousePoints, app.patternChanges)
+            app.fadingMousePoints[currentTick] = app.mousePoints
+            Timer(app, 1, 1, lambda _: app.fadingMousePoints.pop(currentTick))
+            app.mousePoints = []
 
-        for enemy in app.enemies:
-            if enemy.hasPattern(app.lastPattern):
-                toRemove.add(enemy)
+            toRemove = set()
 
-        for enemy in toRemove:
-            enemy.patterns.pop()
-            
-            if len(enemy.patterns) == 0:
-                enemy.kill()  
+            for enemy in app.enemies:
+                if enemy.hasPattern(app.lastPattern):
+                    toRemove.add(enemy)
 
-    if app.pressed and not app.starting:
-        app.starting = True
+            for enemy in toRemove:
+                enemy.patterns.pop()
+                
+                if len(enemy.patterns) == 0:
+                    enemy.kill(reward=False)  
 
-        Timer(app, 1, 1, startGame)
+            app.score += CONFIGURATION['scorePerEnemyKilled']*(len(toRemove)**2) # Give a bonus for comboing Enemies
+    else:
+        if app.pressed and not app.starting:
+            app.starting = True
+
+            Timer(app, 1, 1, startGame)
 
 def onMouseDrag(app, x, y):
-    app.mousePoints.append((x, app.height - y))
+    if app.started:
+        app.mousePoints.append((x, app.height - y))
 
 def onMouseMove(app, x, y):
     if not app.started:
