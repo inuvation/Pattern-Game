@@ -2,11 +2,13 @@ from cmu_graphics import *
 from modules.utilities import randInRange
 import math
 
-def drawFrame(app, x, y, w, h, invertColor=False, text=''):
-    drawRect(x, y, w, h, fill=(invertColor and app.secondaryColor or app.primaryColor))
-    drawRect(x + app.margins, y + app.margins, w - app.margins*2, h - app.margins*2, fill=None, border=(invertColor and app.primaryColor or app.secondaryColor))
+def drawFrame(app, x, y, w, h, depth=8, opacity=100, invertColor=False, text=''):
+    drawPolygon(x, y + 1, x - depth, y + depth, x - depth, y + depth + h, x + w - depth, y + depth + h, x + w - 1, y + h, x + w - 1, y + 1, fill=(invertColor and app.primaryColor or app.secondaryColor), opacity=opacity)
 
-    drawLabel(text, x + w/2, y + h/2, size = h/2, fill=app.textColor, font=app.font, border=(invertColor and 'black' or 'white'))
+    drawRect(x, y, w, h, fill=gradient(invertColor and rgb(255, 255, 255) or rgb(0,0,0), invertColor and app.secondaryColor or app.primaryColor, start='center'), opacity=opacity)
+    drawRect(x + app.margins, y + app.margins, w - app.margins*2, h - app.margins*2, fill=(invertColor and app.secondaryColor or app.primaryColor), border=(invertColor and app.primaryColor or app.secondaryColor), opacity=opacity)
+
+    drawLabel(text, x + w/2, y + h/2, size = h/2, fill=app.textColor, font=app.font, border=(invertColor and 'black' or 'white'), opacity=opacity)
 
 def drawHeart(app, x, y, w, h):
     circleWidth = w/2

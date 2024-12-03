@@ -70,7 +70,7 @@ class Enemy():
         numShapes = len(self.patterns)
         w = numShapes*shapeSize + (numShapes + 1)*shapePadding
 
-        drawFrame(app, self.x - w/2, self.y + self.radius, w, shapeSize + shapePadding*2)
+        drawFrame(app, self.x - w/2, self.y + self.radius, w, shapeSize + shapePadding*2, depth=numShapes*4)
 
         for i in range(numShapes):
             drawShape(self.patterns[i], self.x - w/2 + (i + 1)*(shapePadding) + i*shapeSize, self.y + self.radius + shapePadding, shapeSize, shapeSize, fill=(i == (numShapes - 1) and 'white' or 'gray'))

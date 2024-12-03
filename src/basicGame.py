@@ -7,37 +7,8 @@ from modules.utilities import clamp
 from modules.background import drawBackground, BackgroundStar, ShootingStar
 from modules.configuration import CONFIGURATION
 from uiElements import drawFrame
+import math
 
-def startGame(app):
-    restartGame(app, doFirstLoad=True)
-    app.started = True
-
-def restartGame(app, doFirstLoad):
-    if not doFirstLoad:
-        app.character.__init__(app)
-
-    app.mousePoints = []
-
-    app.score = 0
-
-    app.enemies = set()
-    app.lastEnemy = False
-
-    app.paused = False
-    app.internalPause = False
-    app.gameOver = False
-    app.won = False
-
-    app.tick = 0
-
-    app.waveIndex = 0
-    startWave(app)
-
-def onGameOver(app, won):
-    app.won = won
-    app.gameOver = True
-    app.mousePoints = []
- 
 def drawGameOver(app):
     w, h = app.width/3, app.height/5
 
@@ -72,11 +43,42 @@ def drawMousePoints(app):
             drawPoints(app, points, opacity=opacity)
 
 def drawStartScreen(app):
-    drawRect(app.startX - 4, app.startY + 4, app.w, app.h, fill=app.secondaryColor, opacity=app.opacityFactor)
-
-    drawRect(app.startX - app.hoverFactor, app.startY + app.hoverFactor, app.w, app.h, fill=app.primaryColor, opacity=app.opacityFactor)
+    drawFrame(app, app.startX - app.hoverFactor, app.startY + app.hoverFactor, app.w, app.h, depth=(12 - app.hoverFactor), opacity=app.opacityFactor)
    
+    drawLabel('Cosmic Combos', app.cx, app.cy/2, size=(app.h/2), font=app.font, italic=True, fill=app.secondaryColor, border=app.primaryColor, rotateAngle=5*(math.sin(app.tick/15)), opacity=app.opacityFactor)
+
     drawLabel('Launch', app.cx - app.hoverFactor, app.cy + app.hoverFactor, size=(app.h/2)*app.scaleFactor, font=app.font, fill=app.textColor, opacity=app.opacityFactor)
+
+def startGame(app):
+    restartGame(app, doFirstLoad=True)
+    app.started = True
+
+def onGameOver(app, won):
+    app.won = won
+    app.gameOver = True
+    app.mousePoints = []
+
+def restartGame(app, doFirstLoad):
+    if not doFirstLoad:
+        app.character.__init__(app)
+
+    app.mousePoints = []
+    app.fadingMousePoints = dict()
+
+    app.score = 0
+
+    app.enemies = set()
+    app.lastEnemy = False
+
+    app.paused = False
+    app.internalPause = False
+    app.gameOver = False
+    app.won = False
+
+    app.tick = 0
+
+    app.waveIndex = 0
+    startWave(app)
 
 def onAppStart(app):
     app.tick = 0
@@ -107,8 +109,6 @@ def onAppStart(app):
 
     # Game Mechanics
     app.character = Character(app)
-    app.lastPattern = None
-    app.fadingMousePoints = dict()
     app.patternChanges = loadPatternChanges(PATTERNS)
     app.onGameOver = onGameOver # Must be called from the character file
     app.paused = False
@@ -117,7 +117,6 @@ def onAppStart(app):
 
 def redrawAll(app):
     drawBackground(app)
-    drawStartScreen(app)
 
     if app.started:
         app.character.drawCharacter()
@@ -140,8 +139,13 @@ def redrawAll(app):
 
         if app.paused:
             drawPaused(app)
+    else:
+        drawStartScreen(app)
+
 
 def onMousePress(app, x, y):
+    app.mousePoints = []
+    
     if app.hovered:
         app.pressed = True
 
@@ -149,7 +153,7 @@ def onMouseRelease(app, x, y):
     if app.started:
         if len(app.mousePoints) > 1:
             currentTick = app.tick
-            app.lastPattern = findPattern(PATTERNS, app.mousePoints, app.patternChanges)
+            pattern = findPattern(PATTERNS, app.mousePoints, app.patternChanges)
             app.fadingMousePoints[currentTick] = app.mousePoints
             Timer(app, 1, 1, lambda _: app.fadingMousePoints.pop(currentTick))
             app.mousePoints = []
@@ -157,7 +161,7 @@ def onMouseRelease(app, x, y):
             toRemove = set()
 
             for enemy in app.enemies:
-                if enemy.hasPattern(app.lastPattern):
+                if enemy.hasPattern(pattern):
                     toRemove.add(enemy)
 
             for enemy in toRemove:
@@ -175,7 +179,7 @@ def onMouseRelease(app, x, y):
             Timer(app, 1, 1, startGame)
 
 def onMouseDrag(app, x, y):
-    if app.started:
+    if app.started and not app.gameOver:
         app.mousePoints.append((x, app.height - y))
 
 def onMouseMove(app, x, y):
@@ -215,9 +219,9 @@ def takeStep(app):
             star.move()
     
         if app.hovered or app.starting:
-            app.hoverFactor = clamp(app.hoverFactor + 2, 0, 4)
+            app.hoverFactor = clamp(app.hoverFactor + 2, 0, 12)
         else:
-            app.hoverFactor = clamp(app.hoverFactor - 2, 0, 4)
+            app.hoverFactor = clamp(app.hoverFactor - 2, 0, 12)
 
         if app.pressed or app.starting:
             app.scaleFactor = clamp(app.scaleFactor - 0.05, 0.9, 1)
