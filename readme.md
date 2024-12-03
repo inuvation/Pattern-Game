@@ -8,7 +8,7 @@ The only library needed is cmu_graphics, which can be downloaded from [CS Academ
 
 After installation, place cmu_graphics inside the /src directory
 
-Then, to start the game, run game.py
+Then, to start the game, run main.py
 
 ## Shortcut Commands ##
 

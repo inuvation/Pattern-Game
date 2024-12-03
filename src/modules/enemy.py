@@ -1,12 +1,14 @@
-from modules.configuration import CONFIGURATION
-from modules.utilities import getCommaSeperatedStringFromList, randInRange
-from modules.patterns import drawShape
-from uiElements import drawFrame, drawAsteroid, generateCraters, drawHeart
-import modules.waves 
-from modules.timer import Timer
 from cmu_graphics import *
 import random
 import math
+
+from modules.configuration import CONFIGURATION
+from modules.utilities import randInRange
+from modules.patterns import drawShape
+from modules.timer import Timer
+from modules.ui import drawFrame, drawAsteroid, generateCraters, drawHeart
+
+import modules.waves as waves
 
 class Enemy():
     id = 0
@@ -56,10 +58,10 @@ class Enemy():
             self.app.score += CONFIGURATION['scorePerEnemyKilled']
 
         if len(self.app.enemies) == 0 and self.app.lastEnemy:
-            Timer(app, 1, 1, modules.waves.startWave)
+            Timer(app, 1, 1, waves.start)
 
     def hasPattern(self, pattern):
-        if self.patterns[-1] == pattern:
+        if self.patterns[0] == pattern:
            return True
             
     def drawEnemy(self):
@@ -73,7 +75,7 @@ class Enemy():
         drawFrame(app, self.x - w/2, self.y + self.radius, w, shapeSize + shapePadding*2, depth=numShapes*4)
 
         for i in range(numShapes):
-            drawShape(self.patterns[i], self.x - w/2 + (i + 1)*(shapePadding) + i*shapeSize, self.y + self.radius + shapePadding, shapeSize, shapeSize, fill=(i == (numShapes - 1) and 'white' or 'gray'))
+            drawShape(self.patterns[i], self.x - w/2 + (i + 1)*(shapePadding) + i*shapeSize, self.y + self.radius + shapePadding, shapeSize, shapeSize, fill=(i == 0 and 'white' or 'gray'))
 
 class HeartGivingStar(Enemy):
     def __init__(self, app):

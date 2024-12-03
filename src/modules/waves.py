@@ -1,9 +1,10 @@
 from cmu_graphics import *
+
 from modules.timer import Timer
 from modules.combos import *
 from modules.enemy import HeartGivingStar
 from modules.configuration import CONFIGURATION
-from uiElements import drawFrame
+from modules.ui import drawFrame
 
 WAVES = [ # Velocity and spawn delay are affected by the user chosen difficulty
     {
@@ -43,7 +44,7 @@ def buildWave(app, wave):
 
     Timer(app, cumulativeTime, 1, lambda _: setattr(app, 'lastEnemy', True))
 
-def startWave(app):
+def start(app):
     app.waveBanner = True
     app.waveIndex = app.waveIndex + 1
     
