@@ -31,7 +31,7 @@ def initialize(app):
         if level == 'Easy':
             Button.selectedInGroup['difficulties'] = difficultyButton
 
-    app.tutorialButton = Button(app, "Tutorial", (app.width - difficultyW)/2, app.height - difficultyH - app.margins*4, difficultyW, difficultyH, tutorial.start, depth=6, fill='black', secondaryFill='dimGray')
+    app.tutorialButton = Button(app, "Tutorial", (app.width - difficultyW)/2, app.height - difficultyH - app.margins*4, difficultyW, difficultyH, tutorial.start, depth=6, fill=app.darkColor, secondaryFill='dimGray')
 
     app.shootingStars = []
     ShootingStar.generate(app, 4)

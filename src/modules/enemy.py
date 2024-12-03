@@ -6,7 +6,7 @@ from modules.configuration import CONFIGURATION
 from modules.utilities import randInRange
 from modules.patterns import drawShape
 from modules.timer import Timer
-from modules.ui import drawFrame, drawAsteroid, generateCraters, drawHeart
+from modules.ui import drawAsteroidEnemy, generateCraters, drawHeartEnemy
 
 import modules.waves as waves
 
@@ -65,17 +65,7 @@ class Enemy():
            return True
             
     def drawEnemy(self):
-        drawAsteroid(self.craters, self.x, self.y, self.radius)
-
-        shapePadding = app.margins*2
-        shapeSize = 64
-        numShapes = len(self.patterns)
-        w = numShapes*shapeSize + (numShapes + 1)*shapePadding
-
-        drawFrame(app, self.x - w/2, self.y + self.radius, w, shapeSize + shapePadding*2, depth=numShapes*4)
-
-        for i in range(numShapes):
-            drawShape(self.patterns[i], self.x - w/2 + (i + 1)*(shapePadding) + i*shapeSize, self.y + self.radius + shapePadding, shapeSize, shapeSize, fill=(i == 0 and 'white' or 'gray'))
+        drawAsteroidEnemy(self.craters, self.x, self.y, self.radius, self.patterns)
 
 class HeartGivingStar(Enemy):
     def __init__(self, app):
@@ -98,14 +88,4 @@ class HeartGivingStar(Enemy):
             Timer.defer(lambda: self.app.enemies.remove(self))
 
     def drawEnemy(self):
-        drawHeart(app, self.x - self.radius, self.y - self.radius, self.radius*2, self.radius*2)
-
-        shapePadding = app.margins*2
-        shapeSize = 64
-        numShapes = len(self.patterns)
-        w = numShapes*shapeSize + (numShapes + 1)*shapePadding
-
-        drawFrame(app, self.x - w/2, self.y + self.radius, w, shapeSize + shapePadding*2)
-
-        for i in range(numShapes):
-            drawShape(self.patterns[i], self.x - w/2 + (i + 1)*(shapePadding) + i*shapeSize, self.y + self.radius + shapePadding, shapeSize, shapeSize, fill=(i == (numShapes - 1) and 'white' or 'gray'))
+        drawHeartEnemy(app, self.x, self.y, self.radius)

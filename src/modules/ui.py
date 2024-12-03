@@ -2,17 +2,20 @@ from cmu_graphics import *
 import math
 
 from modules.utilities import randInRange, clamp
+from modules.patterns import drawShape
 
-def drawFrame(app, x, y, w, h, depth=8, opacity=100, invertColor=False, fill=None, secondaryFill=None, text=''):
+def drawFrame(app, x, y, w, h, depth=8, opacity=100, invertColor=False, fill=None, secondaryFill=None, text='', border='black', textH=None):
     if fill == None: fill = app.primaryColor
     if secondaryFill == None: secondaryFill = app.secondaryColor
 
     drawPolygon(x, y + 1, x - depth, y + depth, x - depth, y + depth + h, x + w - depth, y + depth + h, x + w - 1, y + h, x + w - 1, y + 1, fill=(invertColor and fill or secondaryFill), opacity=opacity)
 
-    drawRect(x, y, w, h, fill=gradient(invertColor and fill or secondaryFill, invertColor and secondaryFill or fill, start='center'), opacity=opacity)
+    drawRect(x, y, w, h, fill=(invertColor and secondaryFill or fill), opacity=opacity)
+    # drawRect(x, y, w, h, fill=gradient(invertColor and fill or secondaryFill, invertColor and secondaryFill or fill, start='center'), opacity=opacity)
+    
     drawRect(x + app.margins, y + app.margins, w - app.margins*2, h - app.margins*2, fill=(invertColor and secondaryFill or fill), border=(invertColor and fill or secondaryFill), opacity=opacity)
 
-    drawLabel(text, x + w/2, y + h/2, size = h/2, fill=app.textColor, font=app.font, border='black', opacity=opacity)
+    drawLabel(text, x + w/2, y + h/2, size=(textH or h/2), fill=app.textColor, font=app.font, border=border, opacity=opacity)
 
 def drawHeart(app, x, y, w, h):
     circleWidth = w/2
@@ -29,6 +32,17 @@ def drawHeart(app, x, y, w, h):
     drawCircle(x + circleWidth, y + ovalHeight*(2/3), ovalHeight/3, fill='red') # Covering hole in center
 
     drawOval(x + circleWidth/4, y + ovalHeight/4, ovalWidth/2.5, ovalHeight/7, fill='pink', rotateAngle=-45) # Shiny part on top left
+
+def drawHeartEnemy(app, x, y, radius):
+    drawHeart(app, x - radius, y - radius, radius*2, radius*2)
+
+    shapePadding = app.margins*2
+    shapeSize = radius
+    w = shapeSize + shapePadding*2
+
+    drawFrame(app, x - w/2, y + radius, w, shapeSize + shapePadding*2)
+
+    drawShape('heart', x - w/2 + shapePadding, y + radius + shapePadding, shapeSize, shapeSize, fill='white')
 
 def generateCraters(radius, amount):
     craters = []
@@ -75,9 +89,23 @@ def drawEarth(landMasses, x, y, radius, fill='blue', secondaryFill='green'):
  
 def drawAsteroid(craters, x, y, radius, fill='dimGray', secondaryFill='gray'):
     drawCircle(x, y, radius, fill=fill, border=secondaryFill)
-
+    
     for (size, posR, posTheta) in craters:
         drawCircle(x + posR*math.cos(posTheta), y + posR*math.sin(posTheta), size, fill=secondaryFill)
+
+def drawAsteroidEnemy(craters, x, y, radius, patterns, fill='dimGray', secondaryFill='gray'): 
+    drawAsteroid(craters, x, y, radius, fill=fill, secondaryFill=secondaryFill)
+
+    shapePadding = app.margins*2
+    shapeSize = radius
+    numShapes = len(patterns)
+    w = numShapes*shapeSize + (numShapes + 1)*shapePadding
+
+    drawFrame(app, x - w/2, y + radius, w, shapeSize + shapePadding*2, depth=numShapes*4)
+
+    for i in range(numShapes):
+        drawShape(patterns[i], x - w/2 + (i + 1)*(shapePadding) + i*shapeSize, y + radius + shapePadding, shapeSize, shapeSize, fill=(i == 0 and 'white' or 'gray'))
+
 
 def animate(alter, increase, scaleBy, lower, upper):
     if increase:

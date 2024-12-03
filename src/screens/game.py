@@ -17,8 +17,8 @@ def initialize(app):
 
     buttonW, buttonH = app.width/6, app.height/7.5
 
-    app.mainMenuButton = Button(app, "Main Menu", app.margins*4, app.height - buttonH/2 - app.margins*4, buttonW*0.75, buttonH/2, main.onAppStart, depth=6, fill='black', secondaryFill='dimGray')
-    app.pauseButton = Button(app, "Pause", app.margins*8 + buttonW*0.75, app.height - buttonH/2 - app.margins*4, buttonW/2, buttonH/2, lambda app: setattr(app, 'paused', not app.paused), depth=6, fill='black', secondaryFill='dimGray')
+    app.mainMenuButton = Button(app, "Main Menu", app.margins*4, app.height - buttonH/2 - app.margins*4, buttonW*0.75, buttonH/2, main.onAppStart, depth=6, fill=app.darkColor, secondaryFill='dimGray')
+    app.pauseButton = Button(app, "Pause", app.margins*8 + buttonW*0.75, app.height - buttonH/2 - app.margins*4, buttonW/2, buttonH/2, lambda app: setattr(app, 'paused', not app.paused), depth=6, fill=app.darkColor, secondaryFill='dimGray')
     app.mainMenuButton.visible = False
     app.pauseButton.visible = False
     

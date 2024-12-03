@@ -11,7 +11,7 @@ import screens.tutorial as tutorial
 def drawPaused(app):
     w, h = app.width/6, app.height/8
 
-    drawFrame(app, (app.width - w)/2, app.margins*4, w, h, depth=6, fill='dimGray', secondaryFill='black', text='Paused')
+    drawFrame(app, (app.width - w)/2, app.margins*4, w, h, depth=6, fill='dimGray', secondaryFill=app.darkColor, text='Paused')
 
 def onAppStart(app):
     app.tick = 0
@@ -20,6 +20,7 @@ def onAppStart(app):
     app.font = 'montserrat'
     app.primaryColor = rgb(32, 0, 54)
     app.secondaryColor = rgb(210, 142, 255)
+    app.darkColor = rgb(25, 25, 25)
     app.textColor = 'white'
     app.margins = 8
 
