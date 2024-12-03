@@ -9,7 +9,7 @@ CONFIGURATION = {
         'Easy': {
             'index': 0,
             'fill': 'lightGreen',
-            'secondaryFill': 'seaGreen',
+            'secondaryFill': 'darkSeaGreen',
             'additionalVelocity': 0,
             'subtractedSpawnDelay': 0
         },

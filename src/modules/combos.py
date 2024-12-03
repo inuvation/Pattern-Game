@@ -1,7 +1,6 @@
 from modules.patterns import PATTERNS
 from modules.utilities import randInRange
-import modules.enemy as enemy
-
+import modules.enemy
 import random
 
 filtedPatterns = [key for key in PATTERNS.keys() if key != 'heart']
@@ -14,7 +13,7 @@ def getRandomPatterns(amount, replacement=False):
 
 class BaseCombo():
     def spawn(self, app):
-        enemy.Enemy(app, self.pattern())
+        modules.enemy.Enemy(app, self.pattern())
 
 class sameCombo(BaseCombo): # 1 pattern repeated
     def __init__(self, size=2):

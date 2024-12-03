@@ -1,8 +1,8 @@
-from cmu_graphics import *
 import math
 
 from modules.utilities import *
 from modules.configuration import CONFIGURATION
+from cmu_graphics import *
 
 PATTERNS = {
     'verticalLine': [

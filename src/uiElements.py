@@ -1,7 +1,6 @@
 from cmu_graphics import *
-import math
-
 from modules.utilities import randInRange, clamp
+import math
 
 def drawFrame(app, x, y, w, h, depth=8, opacity=100, invertColor=False, fill=None, secondaryFill=None, text=''):
     if fill == None: fill = app.primaryColor
@@ -111,40 +110,27 @@ class Button():
         self.fill = fill
         self.secondaryFill = secondaryFill
 
-        self.opacity = 100
-
-        self.visible = True
-
         Button.selectedInGroup[group] = Button.selectedInGroup.get(group, None)
 
     def checkMouseInBounds(self, x, y):
-        if not self.visible: return
-
         if x >= self.x and x <= self.x + self.w and y >= self.y and y <= self.y + self.h:
             self.hovered = True
         else:
             self.hovered = False
 
     def checkClicked(self):
-        if not self.visible: return
-        if not self.hovered: return
+        if self.hovered:
+            if self.group:
+                Button.selectedInGroup[self.group] =self
 
-        if self.group:
-            Button.selectedInGroup[self.group] = self
+            self.onClick(self.app)
 
-        self.onClick(self.app)
-
-        self.pressed = True
+            self.pressed = True
 
     def draw(self):
-        if not self.visible:
-            return
+        drawFrame(self.app, self.x - self.hoverFactor, self.y + self.hoverFactor, self.w, self.h, depth=(self.depth - self.hoverFactor), opacity=self.app.opacityFactor, fill=self.fill, secondaryFill=self.secondaryFill)
 
-        drawFrame(self.app, self.x - self.hoverFactor, self.y + self.hoverFactor, self.w, self.h, depth=(self.depth - self.hoverFactor), fill=self.fill, secondaryFill=self.secondaryFill, opacity=self.opacity)
-
-        selected = Button.selectedInGroup[self.group] == self
-
-        drawLabel(self.text, self.x + self.w/2 - self.hoverFactor, self.y + self.h/2 + self.hoverFactor, size=(self.h/2)*self.scaleFactor, font=self.app.font, fill=(self.group and (selected and 'white' or 'gray') or self.app.textColor), border=(selected and 'black' or None), opacity=self.opacity)
+        drawLabel(self.text, self.x + self.w/2 - self.hoverFactor, self.y + self.h/2 + self.hoverFactor, size=(self.h/2)*self.scaleFactor, font=self.app.font, fill=(self.group and (Button.selectedInGroup[self.group] == self and 'white' or 'gray') or self.app.textColor), border='black', opacity=self.app.opacityFactor)
 
     def hoverEffect(self):
         self.hoverFactor = animate(self.hoverFactor, self.hovered, 2, 0, self.depth)

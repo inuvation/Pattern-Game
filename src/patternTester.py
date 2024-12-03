@@ -1,5 +1,4 @@
 from cmu_graphics import *
-
 from modules.patterns import findPattern, loadPatternChanges, PATTERNS
 from modules.utilities import getCommaSeperatedStringFromList
 

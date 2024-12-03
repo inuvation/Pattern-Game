@@ -1,7 +1,6 @@
-from cmu_graphics import *
-
 from modules.configuration import CONFIGURATION
-from modules.ui import drawHeart, drawEarth, generateLandMasses
+from uiElements import drawHeart, drawEarth, generateLandMasses
+from cmu_graphics import *
 
 class Character():
     def __init__(self, app):

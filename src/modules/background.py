@@ -1,8 +1,7 @@
 from cmu_graphics import *
-import math
-
 from modules.timer import Timer
 from modules.utilities import randInRange
+import math
 
 class ShootingStar():
     id = 0
@@ -78,9 +77,8 @@ class BackgroundStar():
 def drawBackground(app):
     drawRect(0, 0, app.width, app.height, fill='black')
 
+    for star in app.shootingStars:
+        star.draw()
+
     for star in app.backgroundStars:
         star.draw()
-    
-    if not app.started:
-        for star in app.shootingStars:
-            star.draw()

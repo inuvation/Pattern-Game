@@ -1,7 +1,7 @@
 from cmu_graphics import *
-import math
-
 from modules.patterns import dynamicTimeWarpCost, PATTERNS
+
+import math
 
 def drawGraph(app, pattern, x, y, w, h, horizontal=True):
     drawRect(x, y, w, h, fill='white', border='black')
