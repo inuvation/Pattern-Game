@@ -146,5 +146,5 @@ def drawGameOver(app):
     w, h = app.width/3, app.height/5
 
     drawFrame(app, (app.width - w)/2, (app.height - h)/2, w, h)
-    drawLabel(app.won and 'You win!' or'Game over!', app.width/2, (app.height - h)/2 + app.margins*3, size = h/3.5, align='top', fill=app.textColor, font=app.font)
+    drawLabel(app.won and 'You win!' or 'Game over!', app.width/2, (app.height - h)/2 + app.margins*3, size = h/3.5, align='top', fill=app.textColor, font=app.font)
     drawLabel('Press any key to restart', app.width/2, (app.height - h)/2 + h - app.margins*3, size = h/5, align='bottom', fill=app.textColor, font=app.font)
