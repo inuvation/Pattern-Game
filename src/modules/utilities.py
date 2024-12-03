@@ -3,6 +3,7 @@
 # https://www.youtube.com/watch?v=9GdbMc4CEhE (Dynamic time warping 2: Algorithm)
 
 import random
+import math
 
 def sign(n):
     if n < 0: return -1
@@ -35,6 +36,29 @@ def normalize(matrix):
         normalizedMatrix.append((normalizedX, normalizedY))
 
     return normalizedMatrix
+
+def rotateNormalizedMatrix(matrix, angle):
+    rotatedMatrix = []
+
+    for point in matrix:
+        x = point[0]
+        y = point[0]
+
+        # Center at the origin
+        x -= 0.5
+        y -= 0.5 
+
+        # Rotation matrix
+        newX = x*math.cos(angle) - y*math.sin(angle)
+        newY = x*math.sin(angle) + y*math.cos(angle)
+
+        # Rebound from (0, 0) to (1, 1)
+        newX += 0.5
+        newY += 0.5
+
+        rotatedMatrix.append((newX, newY))
+
+    return rotatedMatrix
 
 def getCommaSeperatedStringFromList(L):
     string = ''

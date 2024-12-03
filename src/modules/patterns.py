@@ -13,13 +13,13 @@ PATTERNS = {
         (0, 0),
         (1, 0)
     ],
-    'square': [
-        (0, 0),
-        (1, 0),
-        (1, 1),
-        (0, 1),
-        (0, 0)
-    ],
+    # 'square': [
+    #     (0, 0),
+    #     (1, 0),
+    #     (1, 1),
+    #     (0, 1),
+    #     (0, 0)
+    # ],
     'triangle': [
         (0, 0),
         (1, 0),
@@ -89,27 +89,38 @@ def getCost(normalPattern1, normalPattern2):
 def findPattern(listOfPatterns, patternToCheck, directionChangesToCompare=None):
     lowestCost, closestShape = None, None
 
-    normalizedPatternToCheck = normalize(patternToCheck)
-    patternToCheckDirectionChanges = getDirectionalChanges(normalizedPatternToCheck)
+    normalizedPatternToCheck = normalize(patternToCheck) # Normalize the user drawn shape
+
+    # rotatedNormalizedPatterns = []
+
+    # for angle in range(-10, 11): # Check rotated versions of the user draw shape
+    #     rotatedNormalizedPatterns.append(rotateNormalizedMatrix(normalizedPatternToCheck, math.radians(angle)))
+
+    patternToCheckDirectionChanges = getDirectionalChanges(normalizedPatternToCheck) # Number of times the user changes directions in their drawing
 
     if directionChangesToCompare == None:
         directionChangesToCompare = loadPatternChanges(listOfPatterns)
 
     for patternName in listOfPatterns:
         directionChanges = directionChangesToCompare[patternName]
-        if patternToCheckDirectionChanges < directionChanges: 
-            # print(f'Skipped {patternName} for checked pattern having less directions')
+        if patternToCheckDirectionChanges < directionChanges - CONFIGURATION['directionChangeTolerance']: 
+            print(f'Skipped {patternName} for checked pattern having less directions')
             
             continue
 
         pattern = listOfPatterns[patternName]
-        fowardCost = getCost(normalizedPatternToCheck, pattern)
-        backwardCost = getCost(normalizedPatternToCheck, list(reversed(pattern)))
-        cost = min(fowardCost, backwardCost)
+
+        costs = [getCost(normalizedPatternToCheck, pattern), getCost(normalizedPatternToCheck, list(reversed(pattern)))]
+
+        # for rotatedNormalizedPattern in rotatedNormalizedPatterns:
+        #     costs.append(getCost(rotatedNormalizedPattern, pattern))
+
+        cost = min(costs)
+
         if lowestCost == None or cost < lowestCost:
             lowestCost, closestShape = cost, patternName
 
-    # print(f'user drawn shape has {directionChanges}, {closestShape} has {}')
+    print(f'user drawn shape has {directionChanges}, {closestShape}')
 
     return closestShape
 
