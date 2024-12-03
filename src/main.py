@@ -29,7 +29,7 @@ def onAppStart(app):
 
     # Game
     game.initialize(app)
-
+    
 def redrawAll(app):
     drawBackground(app)
 
