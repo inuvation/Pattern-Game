@@ -104,7 +104,7 @@ def findPattern(listOfPatterns, patternToCheck, directionChangesToCompare=None):
     for patternName in listOfPatterns:
         directionChanges = directionChangesToCompare[patternName]
         if patternToCheckDirectionChanges < directionChanges - CONFIGURATION['directionChangeTolerance']: 
-            print(f'Skipped {patternName} for checked pattern having less directions')
+            # print(f'Skipped {patternName} for checked pattern having less directions')
             
             continue
 
@@ -120,7 +120,7 @@ def findPattern(listOfPatterns, patternToCheck, directionChangesToCompare=None):
         if lowestCost == None or cost < lowestCost:
             lowestCost, closestShape = cost, patternName
 
-    print(f'user drawn shape has {directionChanges}, {closestShape}')
+    # print(f'user drawn shape has {directionChanges}, {closestShape}')
 
     return closestShape
 
