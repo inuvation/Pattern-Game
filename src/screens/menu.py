@@ -43,7 +43,7 @@ def initialize(app):
     app.opacityFactor = 100
 
 def draw(app):
-    drawLabel('Cosmic Combos', app.cx, app.cy/3, size=app.height/10, font=app.font, italic=True, fill=app.secondaryColor, border=app.primaryColor, rotateAngle=5*(math.sin(app.tick/15)), opacity=app.opacityFactor)
+    drawLabel('Cosmic Combos', app.cx, app.cy/4, size=app.height/10, font=app.font, italic=True, fill=app.secondaryColor, border=app.primaryColor, rotateAngle=5*(math.sin(app.tick/15)), opacity=app.opacityFactor)
 
 def tick(app):
     if not app.tutorial:
