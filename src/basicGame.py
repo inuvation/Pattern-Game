@@ -6,7 +6,7 @@ from modules.waves import startWave, drawWaveBanner
 from modules.utilities import clamp
 from modules.background import drawBackground, BackgroundStar, ShootingStar
 from modules.configuration import CONFIGURATION
-from uiElements import drawFrame
+from uiElements import drawFrame, animate, Button
 import math
 
 def drawGameOver(app):
@@ -43,11 +43,15 @@ def drawMousePoints(app):
             drawPoints(app, points, opacity=opacity)
 
 def drawStartScreen(app):
-    drawFrame(app, app.startX - app.hoverFactor, app.startY + app.hoverFactor, app.w, app.h, depth=(12 - app.hoverFactor), opacity=app.opacityFactor)
-   
-    drawLabel('Cosmic Combos', app.cx, app.cy/2, size=(app.h/2), font=app.font, italic=True, fill=app.secondaryColor, border=app.primaryColor, rotateAngle=5*(math.sin(app.tick/15)), opacity=app.opacityFactor)
+    drawLabel('Cosmic Combos', app.cx, app.cy/2, size=app.height/10, font=app.font, italic=True, fill=app.secondaryColor, border=app.primaryColor, rotateAngle=5*(math.sin(app.tick/15)), opacity=app.opacityFactor)
 
-    drawLabel('Launch', app.cx - app.hoverFactor, app.cy + app.hoverFactor, size=(app.h/2)*app.scaleFactor, font=app.font, fill=app.textColor, opacity=app.opacityFactor)
+    for button in app.buttons:
+        button.draw()
+
+def pressStartButton(app):
+    app.starting = True
+
+    Timer(app, 1, 1, startGame)
 
 def startGame(app):
     restartGame(app, doFirstLoad=True)
@@ -83,6 +87,9 @@ def restartGame(app, doFirstLoad):
 def onAppStart(app):
     app.tick = 0
 
+    # Difficulty
+    app.difficulty = 'Hard'
+
     # Theme
     app.font = 'montserrat'
     app.primaryColor = rgb(32, 0, 54)
@@ -92,13 +99,28 @@ def onAppStart(app):
 
     # Start Screen
     app.started = False
-    app.w, app.h = app.width/4, app.height/5
     app.cx, app.cy = app.width/2, app.height/2
-    app.startX, app.startY = app.cx - app.w/2, app.cy - app.h/2
-    app.hovered = False
-    app.hoverFactor = 0
-    app.pressed = False
-    app.scaleFactor = 1
+    app.buttons = []
+
+    startButtonW, startButtonH = app.width/4, app.height/5
+    startButtonX, startButtonY = app.cx - startButtonW/2, app.cy - startButtonH/2
+    Button(app, "Launch", startButtonX, startButtonY, startButtonW, startButtonH, pressStartButton)
+
+    difficulties = CONFIGURATION['difficulties']
+    numDifficulties = len(difficulties)
+    difficultyW, difficultyH = app.width/8, app.height/10
+
+    difficultiesStartX = (startButtonX + startButtonW/2) - ((difficultyW + app.margins*4)*numDifficulties)/2
+    difficultiesStartY = startButtonY + startButtonH + app.margins*4
+
+    for level in difficulties:
+        difficulty = difficulties[level]
+
+        difficultyButton = Button(app, level, difficultiesStartX + (difficultyW + app.margins*4)*difficulty['index'], difficultiesStartY, difficultyW, difficultyH, lambda app: setattr(app, 'difficulty', level), depth=6, group='difficulties', fill=difficulty['fill'], secondaryFill=difficulty['secondaryFill'])
+
+        if level == 'Easy':
+            Button.selectedInGroup['difficulties'] = difficultyButton
+
     app.starting = False
     app.opacityFactor = 100
     
@@ -142,12 +164,12 @@ def redrawAll(app):
     else:
         drawStartScreen(app)
 
-
 def onMousePress(app, x, y):
     app.mousePoints = []
     
-    if app.hovered:
-        app.pressed = True
+    if not app.started:
+        for button in app.buttons:
+            button.checkClicked()
 
 def onMouseRelease(app, x, y):
     if app.started:
@@ -173,10 +195,8 @@ def onMouseRelease(app, x, y):
             if len(toRemove) > 1: # Give a bonus for comboing patterns
                 app.score += CONFIGURATION['comboBonus']*(len(toRemove)**2)
     else:
-        if app.pressed and not app.starting:
-            app.starting = True
-
-            Timer(app, 1, 1, startGame)
+        for button in app.buttons:
+            button.pressed = False
 
 def onMouseDrag(app, x, y):
     if app.started and not app.gameOver:
@@ -184,10 +204,8 @@ def onMouseDrag(app, x, y):
 
 def onMouseMove(app, x, y):
     if not app.started:
-        if x >= app.startX and x <= app.startX + app.w and y >= app.startY and y <= app.startY + app.h:
-            app.hovered = True
-        else:
-            app.hovered = False
+        for button in app.buttons:
+            button.checkMouseInBounds(x, y)
 
 def onKeyPress(app, key):
     if key == 'p':
@@ -217,21 +235,11 @@ def takeStep(app):
     else:
         for star in app.shootingStars:
             star.move()
+
+        for button in app.buttons:
+            button.hoverEffect()
     
-        if app.hovered or app.starting:
-            app.hoverFactor = clamp(app.hoverFactor + 2, 0, 12)
-        else:
-            app.hoverFactor = clamp(app.hoverFactor - 2, 0, 12)
-
-        if app.pressed or app.starting:
-            app.scaleFactor = clamp(app.scaleFactor - 0.05, 0.9, 1)
-        else:
-            app.scaleFactor = clamp(app.scaleFactor + 0.05, 0.9, 1)
-
-        if app.starting:
-            app.opacityFactor = clamp(app.opacityFactor - 25, 0, 100)
-        else:
-            app.opacityFactor = clamp(app.opacityFactor + 25, 0, 100)
+        app.opacityFactor = animate(app.opacityFactor, app.starting, -25, 0, 100)
 
 def main():
     app = runApp(width=1208, height=720)

@@ -1,12 +1,15 @@
 from cmu_graphics import *
-from modules.utilities import randInRange
+from modules.utilities import randInRange, clamp
 import math
 
-def drawFrame(app, x, y, w, h, depth=8, opacity=100, invertColor=False, text=''):
-    drawPolygon(x, y + 1, x - depth, y + depth, x - depth, y + depth + h, x + w - depth, y + depth + h, x + w - 1, y + h, x + w - 1, y + 1, fill=(invertColor and app.primaryColor or app.secondaryColor), opacity=opacity)
+def drawFrame(app, x, y, w, h, depth=8, opacity=100, invertColor=False, fill=None, secondaryFill=None, text=''):
+    if fill == None: fill = app.primaryColor
+    if secondaryFill == None: secondaryFill = app.secondaryColor
 
-    drawRect(x, y, w, h, fill=gradient(invertColor and rgb(255, 255, 255) or rgb(0,0,0), invertColor and app.secondaryColor or app.primaryColor, start='center'), opacity=opacity)
-    drawRect(x + app.margins, y + app.margins, w - app.margins*2, h - app.margins*2, fill=(invertColor and app.secondaryColor or app.primaryColor), border=(invertColor and app.primaryColor or app.secondaryColor), opacity=opacity)
+    drawPolygon(x, y + 1, x - depth, y + depth, x - depth, y + depth + h, x + w - depth, y + depth + h, x + w - 1, y + h, x + w - 1, y + 1, fill=(invertColor and fill or secondaryFill), opacity=opacity)
+
+    drawRect(x, y, w, h, fill=gradient(invertColor and fill or secondaryFill, invertColor and secondaryFill or fill, start='center'), opacity=opacity)
+    drawRect(x + app.margins, y + app.margins, w - app.margins*2, h - app.margins*2, fill=(invertColor and secondaryFill or fill), border=(invertColor and fill or secondaryFill), opacity=opacity)
 
     drawLabel(text, x + w/2, y + h/2, size = h/2, fill=app.textColor, font=app.font, border=(invertColor and 'black' or 'white'), opacity=opacity)
 
@@ -75,6 +78,64 @@ def drawAsteroid(craters, x, y, radius, fill='dimGray', secondaryFill='gray'):
     for (size, posR, posTheta) in craters:
         drawCircle(x + posR*math.cos(posTheta), y + posR*math.sin(posTheta), size, fill=secondaryFill)
 
+def animate(alter, increase, scaleBy, lower, upper):
+    if increase:
+        alter = clamp(alter + scaleBy, lower, upper)
+    else:
+        alter = clamp(alter - scaleBy, lower, upper)
+
+    return alter
+
+class Button():
+    selectedInGroup = dict()
+
+    def __init__(self, app, text, x, y, w, h, onClick, depth=12, group=None, fill=None, secondaryFill=None):
+        self.app = app
+        self.text = text
+        self.x, self.y = x, y
+        self.w, self.h = w, h
+        self.onClick = onClick
+        self.depth = depth
+
+        self.hovered = False
+        self.hoverFactor = 0
+
+        self.pressed = False
+        self.scaleFactor = 1
+
+        self.app.buttons.append(self)
+
+        self.group = group
+
+        self.fill = fill
+        self.secondaryFill = secondaryFill
+
+        Button.selectedInGroup[group] = Button.selectedInGroup.get(group, None)
+
+    def checkMouseInBounds(self, x, y):
+        if x >= self.x and x <= self.x + self.w and y >= self.y and y <= self.y + self.h:
+            self.hovered = True
+        else:
+            self.hovered = False
+
+    def checkClicked(self):
+        if self.hovered:
+            if self.group:
+                Button.selectedInGroup[self.group] =self
+
+            self.onClick(self.app)
+
+            self.pressed = True
+
+    def draw(self):
+        drawFrame(self.app, self.x - self.hoverFactor, self.y + self.hoverFactor, self.w, self.h, depth=(self.depth - self.hoverFactor), opacity=self.app.opacityFactor, fill=self.fill, secondaryFill=self.secondaryFill)
+
+        drawLabel(self.text, self.x + self.w/2 - self.hoverFactor, self.y + self.h/2 + self.hoverFactor, size=(self.h/2)*self.scaleFactor, font=self.app.font, fill=(self.group and (Button.selectedInGroup[self.group] == self and 'white' or 'gray') or self.app.textColor), opacity=self.app.opacityFactor)
+
+    def hoverEffect(self):
+        self.hoverFactor = animate(self.hoverFactor, self.hovered, 2, 0, self.depth)
+        self.scaleFactor = animate(self.scaleFactor, self.pressed, -0.05, 0.9, 1)
+
 def redrawAll(app):
     drawRect(0, 0, app.width, app.height, fill='black')
 
@@ -83,6 +144,25 @@ def redrawAll(app):
     drawAsteroid(app.craters, 300 + app.margins + 300, app.margins + 100, 100)
     drawEarth(app.landMasses, 300 + app.margins + 600, app.margins + 100, 100)
 
+    for button in app.buttons:
+        button.draw()
+
+def onMousePress(app, x, y):
+    for button in app.buttons:
+        button.checkClicked()
+
+def onMouseRelease(app, x, y):
+    for button in app.buttons:
+        button.pressed = False
+
+def onMouseMove(app, x, y):
+    for button in app.buttons:
+        button.checkMouseInBounds(x, y)
+
+def onStep(app):
+    for button in app.buttons:
+        button.hoverEffect()
+
 def onAppStart(app):
     # Theme
     app.font = 'montserrat'
@@ -90,6 +170,11 @@ def onAppStart(app):
     app.secondaryColor = rgb(210, 142, 255)
     app.textColor = 'white'
     app.margins = 8
+
+    app.opacityFactor = 100
+
+    app.buttons = []
+    Button(app, "Button", app.width/2, app.height/2, app.width/5, app.height/8, lambda _: print('clicked!'))
 
     app.craters = generateCraters(100, 5)
     app.landMasses = generateLandMasses(300 + app.margins + 600, app.margins + 100, 100, 4)

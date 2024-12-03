@@ -2,9 +2,10 @@ from cmu_graphics import *
 from modules.timer import Timer
 from modules.combos import *
 from modules.enemy import HeartGivingStar
+from modules.configuration import CONFIGURATION
 from uiElements import drawFrame
 
-WAVES = [
+WAVES = [ # Velocity and spawn delay are affected by the user chosen difficulty
     {
         'Velocity': 30,
         'SpawnDelay': 4,
@@ -53,8 +54,10 @@ def startWave(app):
 
     wave = WAVES[app.waveIndex - 1]
 
-    app.enemyVelocity = wave['Velocity']
-    app.enemySpawnDelay = wave['SpawnDelay']
+    difficulty = CONFIGURATION['difficulties'][app.difficulty]
+
+    app.enemyVelocity = wave['Velocity'] + difficulty['additionalVelocity']
+    app.enemySpawnDelay = wave['SpawnDelay'] - difficulty['subtractedSpawnDelay']
 
     Timer.defer(lambda: buildWave(app, wave['Amount']))
 
