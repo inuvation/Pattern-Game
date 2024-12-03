@@ -108,7 +108,7 @@ def onAppStart(app):
 
     difficulties = CONFIGURATION['difficulties']
     numDifficulties = len(difficulties)
-    difficultyW, difficultyH = app.width/8, app.height/10
+    difficultyW, difficultyH = app.width/6, app.height/7.5
 
     difficultiesStartX = (startButtonX + startButtonW/2) - ((difficultyW + app.margins*4)*numDifficulties)/2
     difficultiesStartY = startButtonY + startButtonH + app.margins*4

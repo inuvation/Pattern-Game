@@ -11,7 +11,7 @@ def drawFrame(app, x, y, w, h, depth=8, opacity=100, invertColor=False, fill=Non
     drawRect(x, y, w, h, fill=gradient(invertColor and fill or secondaryFill, invertColor and secondaryFill or fill, start='center'), opacity=opacity)
     drawRect(x + app.margins, y + app.margins, w - app.margins*2, h - app.margins*2, fill=(invertColor and secondaryFill or fill), border=(invertColor and fill or secondaryFill), opacity=opacity)
 
-    drawLabel(text, x + w/2, y + h/2, size = h/2, fill=app.textColor, font=app.font, border=(invertColor and 'black' or 'white'), opacity=opacity)
+    drawLabel(text, x + w/2, y + h/2, size = h/2, fill=app.textColor, font=app.font, border='black', opacity=opacity)
 
 def drawHeart(app, x, y, w, h):
     circleWidth = w/2
@@ -130,7 +130,7 @@ class Button():
     def draw(self):
         drawFrame(self.app, self.x - self.hoverFactor, self.y + self.hoverFactor, self.w, self.h, depth=(self.depth - self.hoverFactor), opacity=self.app.opacityFactor, fill=self.fill, secondaryFill=self.secondaryFill)
 
-        drawLabel(self.text, self.x + self.w/2 - self.hoverFactor, self.y + self.h/2 + self.hoverFactor, size=(self.h/2)*self.scaleFactor, font=self.app.font, fill=(self.group and (Button.selectedInGroup[self.group] == self and 'white' or 'gray') or self.app.textColor), opacity=self.app.opacityFactor)
+        drawLabel(self.text, self.x + self.w/2 - self.hoverFactor, self.y + self.h/2 + self.hoverFactor, size=(self.h/2)*self.scaleFactor, font=self.app.font, fill=(self.group and (Button.selectedInGroup[self.group] == self and 'white' or 'gray') or self.app.textColor), border='black', opacity=self.app.opacityFactor)
 
     def hoverEffect(self):
         self.hoverFactor = animate(self.hoverFactor, self.hovered, 2, 0, self.depth)
