@@ -43,7 +43,7 @@ def draw(app):
     drawTutorialFrame(app, app.margins*4, app.margins*4, app.gridElementW, app.gridElementH, topLeft, 'Draw patterns with cursor in the wave of asteroids')
 
     # Top Right
-    drawTutorialFrame(app, app.margins*4 + app.gridElementW + app.margins*4, app.margins*4, app.gridElementW, app.gridElementH, topRight, 'If an asteroid gets too close you lose a heart')
+    drawTutorialFrame(app, app.margins*4 + app.gridElementW + app.margins*4, app.margins*4, app.gridElementW, app.gridElementH, topRight, 'If an asteroid gets close to earth you lose a heart')
 
     # Bottom Left
     drawTutorialFrame(app, app.margins*4, app.margins*4 + app.gridElementH + app.margins*4, app.gridElementW, app.gridElementH, bottomLeft, 'An extra heart spawns in the second wave')
