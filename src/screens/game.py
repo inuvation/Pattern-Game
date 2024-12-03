@@ -104,7 +104,8 @@ def onMouseRelease(app, x, y):
             app.score += CONFIGURATION['comboBonus']*(len(toRemove)**2)
 
 def onMouseDrag(app, x, y):
-    app.mousePoints.append((x, app.height - y))
+    if not app.paused:
+        app.mousePoints.append((x, app.height - y))
 
 def onMousePress(app, x, y):
     app.mousePoints = []
