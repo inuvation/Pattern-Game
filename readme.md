@@ -13,3 +13,7 @@ Then, to start the game, run main.py
 ## Shortcut Commands ##
 
 You can press the key **'p'** to pause the game at any point, or press the pause button in the bottom left of the screen while ingame
+
+## Video Demo ##
+
+[![Video Demo](http://img.youtube.com/vi/P3_7w_q76bY/0.jpg)](https://youtu.be/P3_7w_q76bY "Cosmic Combos - CMU 15112 Term Project")
