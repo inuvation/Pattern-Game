@@ -17,7 +17,7 @@ def onAppStart(app):
     app.tick = 0
 
     # Theme
-    app.font = 'montserrat'
+    app.font = 'orbitron'
     app.primaryColor = rgb(32, 0, 54)
     app.secondaryColor = rgb(210, 142, 255)
     app.darkColor = rgb(25, 25, 25)

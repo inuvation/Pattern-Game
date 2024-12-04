@@ -36,7 +36,7 @@ def drawTutorialFrame(app, x, y, w, h, content, caption):
 
     content(app, x, y, w, h*(3/4))
 
-    drawFrame(app, x, y + h*(3/4), w, h/4, text=caption, textH=h/12, border=None, fill=app.darkColor, secondaryFill='dimGray')
+    drawFrame(app, x, y + h*(3/4), w, h/4, text=caption, textH=h/16, border=None, fill=app.darkColor, secondaryFill='dimGray')
 
 def draw(app):    
     # Top Left
