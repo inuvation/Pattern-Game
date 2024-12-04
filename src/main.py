@@ -16,6 +16,8 @@ def drawPaused(app):
 def onAppStart(app):
     app.tick = 0
 
+    app.stepsPerSecond = 60
+
     # Theme
     app.font = 'orbitron'
     app.primaryColor = rgb(32, 0, 54)
