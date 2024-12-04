@@ -80,12 +80,19 @@ def draw(app):
     if app.gameOver:
         drawGameOver(app)
 
+
+def safePop(dict, key):
+    if dict.get(key, None) == None:
+        return
+    else:
+        dict.pop(key)
+
 def onMouseRelease(app, x, y):
     if len(app.mousePoints) > 1:
         currentTick = app.tick
         pattern = findPattern(PATTERNS, app.mousePoints, app.patternChanges)
         app.fadingMousePoints[currentTick] = app.mousePoints
-        Timer(app, 1, 1, lambda _: app.fadingMousePoints.pop(currentTick))
+        Timer(app, 1, 1, lambda _: safePop(app.fadingMousePoints, currentTick))
         app.mousePoints = []
 
         toRemove = set()
