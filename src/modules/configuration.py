@@ -17,14 +17,14 @@ CONFIGURATION = {
             'index': 1,
             'fill': 'darkOrange',
             'secondaryFill': 'orangeRed',
-            'additionalVelocity': 10,
+            'additionalVelocity': 20,
             'subtractedSpawnDelay': 0.5
         },
         'Hard': {
             'index': 2,
             'fill': 'fireBrick',
             'secondaryFill': 'darkRed',
-            'additionalVelocity': 20,
+            'additionalVelocity': 40,
             'subtractedSpawnDelay': 1
         }
     }
