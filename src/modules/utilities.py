@@ -1,7 +1,3 @@
-# Citations
-# https://www.youtube.com/watch?v=ERKDHZyZDwA (Dynamic time warping 1: Motivation)
-# https://www.youtube.com/watch?v=9GdbMc4CEhE (Dynamic time warping 2: Algorithm)
-
 import random
 import math
 
