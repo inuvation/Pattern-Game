@@ -8,14 +8,18 @@ import screens.game as game
 import screens.menu as menu
 import screens.tutorial as tutorial
 
-def drawPaused(app):
-    w, h = app.width/6, app.height/8
+def initialize(app):
+    Timer.defer(Timer.resetAll)
 
-    drawFrame(app, (app.width - w)/2, app.margins*4, w, h, depth=6, fill='dimGray', secondaryFill=app.darkColor, text='Paused')
-
-def onAppStart(app):
     app.tick = 0
 
+    # Start Screen
+    menu.initialize(app)
+
+    # Game
+    game.initialize(app)
+
+def onAppStart(app):
     app.stepsPerSecond = 60
 
     # Theme
@@ -26,12 +30,13 @@ def onAppStart(app):
     app.textColor = 'white'
     app.margins = 8
 
-    # Start Screen
-    menu.initialize(app)
+    initialize(app)
 
-    # Game
-    game.initialize(app)
-    
+def drawPaused(app):
+    w, h = app.width/6, app.height/8
+
+    drawFrame(app, (app.width - w)/2, app.margins*4, w, h, depth=6, fill='dimGray', secondaryFill=app.darkColor, text='Paused')
+
 def redrawAll(app):
     drawBackground(app)
 

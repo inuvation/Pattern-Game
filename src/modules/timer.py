@@ -49,3 +49,7 @@ class Timer():
             function()
 
         Timer.defers = []
+
+    @staticmethod
+    def resetAll():
+        Timer.timers = set()
